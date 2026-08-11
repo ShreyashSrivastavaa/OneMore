@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play, Flame, Zap } from 'lucide-react';
+import { Play, Flame, Trophy, ArrowRight, Zap } from 'lucide-react';
 import { playTapSound } from '../utils/audio';
 
 export default function StartScreen({ bestStreak, stats, theme = 'dark', onStart }) {
@@ -9,64 +9,80 @@ export default function StartScreen({ bestStreak, stats, theme = 'dark', onStart
   };
 
   const isDark = theme === 'dark';
+  const accuracy = stats.totalGames > 0 ? Math.round((stats.totalCorrect / stats.totalGames) * 100) : 100;
 
   return (
-    <div className={`relative min-h-[100dvh] w-full flex flex-col items-center justify-between p-4 sm:p-6 text-center overflow-hidden transition-colors ${
-      isDark ? 'bg-grid-dark text-[#F5F3E9]' : 'bg-grid-light text-slate-900'
+    <div className={`relative min-h-[100dvh] w-full flex flex-col items-center justify-between p-4 sm:p-8 text-center overflow-hidden transition-colors ${
+      isDark ? 'bg-portfolio-dark text-[#f4e4d0]' : 'bg-portfolio-light text-slate-900'
     }`}>
       {/* Header Spacer */}
-      <div className="h-14 sm:h-16" />
+      <div className="h-16 sm:h-20" />
 
-      {/* Hero Entrance Card */}
-      <div className="relative z-10 my-auto flex flex-col items-center max-w-lg w-full space-y-6 sm:space-y-8 animate-pop px-2">
+      {/* Hero Entrance Section */}
+      <div className="relative z-10 my-auto flex flex-col items-center max-w-xl w-full space-y-6 sm:space-y-8 animate-pop px-2">
         
-        {/* Brand Stamp Header */}
-        <div className="space-y-3 sm:space-y-4">
-          <div className="inline-block bg-[#E2FF00] text-black font-black text-4xl sm:text-6xl font-mono px-5 sm:px-6 py-2 border-3 sm:border-4 border-black shadow-[6px_6px_0px_0px_#000] sm:shadow-[8px_8px_0px_0px_#000] tracking-tighter uppercase transform -rotate-2">
-            PLAY STILL ALIVE
-          </div>
-          
-          <p className={`text-lg sm:text-2xl font-bold max-w-sm mx-auto leading-snug ${
-            isDark ? 'text-[#F5F3E9]' : 'text-slate-900'
-          }`}>
-            How long can you stay alive? One mistake ends your run.
+        {/* Available Live Badge */}
+        <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-mono tracking-wider uppercase ${
+          isDark ? 'glass-pill-dark text-slate-300' : 'glass-pill-light text-slate-700'
+        }`}>
+          <span className="w-2 h-2 rounded-full bg-[#e63946] shadow-[0_0_8px_#e63946] animate-pulse" />
+          <span>HOW LONG CAN YOU STAY ALIVE?</span>
+        </div>
+
+        {/* Hero Title with Outlined Typography */}
+        <div className="space-y-1">
+          <h1 className="text-5xl sm:text-7xl md:text-8xl font-black tracking-tight leading-none uppercase font-sans">
+            <span className={isDark ? 'text-[#f4e4d0]' : 'text-slate-900'}>PLAY </span>
+            <span className={isDark ? 'text-stroke-sand' : 'text-stroke-dark'}>STILL </span>
+            <span className="text-[#e63946]">ALIVE</span>
+          </h1>
+          <p className="text-sm sm:text-base text-slate-400 font-mono max-w-md mx-auto pt-2">
+            Every correct answer keeps your streak alive. One mistake ends your run.
           </p>
         </div>
 
-        {/* Record Badge */}
-        <div className={`w-full border-3 border-black shadow-[5px_5px_0px_0px_#000] p-4 sm:p-5 flex items-center justify-between text-left ${
-          isDark ? 'bg-[#16181a]' : 'bg-white'
+        {/* Portfolio-inspired Stat Strip */}
+        <div className={`w-full rounded-2xl border p-4 sm:p-5 flex items-center justify-around text-center ${
+          isDark ? 'glass-pill-dark' : 'glass-pill-light'
         }`}>
-          <div className="flex items-center gap-3 sm:gap-4">
-            <div className="p-2.5 sm:p-3 bg-[#E2FF00] border-2 border-black text-black shadow-[2px_2px_0px_0px_#000]">
-              <Flame className="w-6 h-6 sm:w-8 sm:h-8 fill-black" />
+          <div className="space-y-0.5">
+            <div className="text-[10px] sm:text-xs font-mono text-slate-400 uppercase tracking-wider flex items-center justify-center gap-1">
+              <Trophy className="w-3.5 h-3.5 text-[#e63946]" />
+              <span>BEST STREAK</span>
             </div>
-            <div>
-              <div className="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider text-slate-400">Personal Best</div>
-              <div className="text-2xl sm:text-3xl font-black font-mono text-[#E2FF00] drop-shadow-[1px_1px_0px_#000]">{bestStreak} STREAK</div>
-            </div>
+            <div className="text-2xl sm:text-3xl font-black font-mono text-[#f4e4d0]">{bestStreak}</div>
           </div>
-          <div className="hidden sm:block text-right font-mono text-xs text-slate-400 font-bold">
-            <div>GAMES: <strong className={isDark ? 'text-white' : 'text-black'}>{stats.totalGames}</strong></div>
-            <div>CORRECT: <strong className={isDark ? 'text-white' : 'text-black'}>{stats.totalCorrect}</strong></div>
+
+          <div className="w-px h-8 bg-white/10" />
+
+          <div className="space-y-0.5">
+            <div className="text-[10px] sm:text-xs font-mono text-slate-400 uppercase tracking-wider">GAMES</div>
+            <div className="text-2xl sm:text-3xl font-black font-mono text-slate-200">{stats.totalGames}</div>
+          </div>
+
+          <div className="w-px h-8 bg-white/10" />
+
+          <div className="space-y-0.5">
+            <div className="text-[10px] sm:text-xs font-mono text-slate-400 uppercase tracking-wider">ACCURACY</div>
+            <div className="text-2xl sm:text-3xl font-black font-mono text-[#00E664]">{accuracy}%</div>
           </div>
         </div>
 
-        {/* Play Button */}
+        {/* Pill Play Button */}
         <button
           onClick={handleStart}
-          className="w-full py-4 sm:py-5 px-6 sm:px-8 brutal-btn-yellow font-black text-2xl sm:text-3xl tracking-wider uppercase flex items-center justify-center gap-3 cursor-pointer group active:scale-95"
+          className="w-full max-w-md py-4 sm:py-5 px-8 rounded-full btn-portfolio-red font-extrabold text-xl sm:text-2xl tracking-wider uppercase flex items-center justify-center gap-3 cursor-pointer group"
         >
-          <Play className="w-7 h-7 sm:w-8 sm:h-8 fill-black" />
-          <span>PLAY GAME</span>
+          <Play className="w-6 h-6 sm:w-7 sm:h-7 fill-white" />
+          <span>START RUN →</span>
         </button>
 
       </div>
 
-      {/* Footer Instructions */}
-      <div className="relative z-10 w-full max-w-md pb-4 text-[10px] sm:text-xs font-mono text-slate-400 font-bold uppercase tracking-widest flex items-center justify-center gap-2">
-        <Zap className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#E2FF00]" />
-        <span>NO REGISTRATION • NO ADS • INSTANT PLAY</span>
+      {/* Footer Info */}
+      <div className="relative z-10 w-full max-w-md pb-4 text-[10px] sm:text-xs font-mono text-slate-500 font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+        <Zap className="w-3.5 h-3.5 text-[#e63946]" />
+        <span>INSTANT PLAY • HIGHER / LOWER TRIVIA</span>
       </div>
     </div>
   );

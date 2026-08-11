@@ -9,49 +9,52 @@ export default function Header({ currentStreak, bestStreak, theme, onToggleTheme
     onToggleTheme();
   };
 
+  const isDark = theme === 'dark';
+
   return (
-    <header className="absolute top-0 left-0 right-0 z-30 px-3 sm:px-6 py-3 flex items-center justify-between">
-      {/* Brand Title Badge */}
+    <header className="absolute top-0 left-0 right-0 z-30 px-3 sm:px-8 py-4 flex items-center justify-between">
+      {/* Brand Title Badge with Live Status Dot */}
       <div className="flex items-center gap-2">
-        <div className="bg-[#E2FF00] text-black font-black text-lg sm:text-xl font-mono px-3 py-1 border-3 border-black shadow-[3px_3px_0px_0px_#000] tracking-tighter uppercase transform -rotate-1">
-          PLAY STILL ALIVE
+        <div className={`flex items-center gap-2.5 px-3.5 sm:px-4 py-1.5 rounded-full border transition-all ${
+          isDark ? 'glass-pill-dark text-[#f4e4d0]' : 'glass-pill-light text-black'
+        }`}>
+          <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981] animate-pulse" />
+          <span className="font-black text-xs sm:text-sm tracking-wider uppercase font-mono">
+            PLAY STILL ALIVE
+          </span>
         </div>
       </div>
 
-      {/* Score HUD Badges */}
+      {/* Score HUD & Controls */}
       <div className="flex items-center gap-2 sm:gap-3">
-        <div className={`flex items-center gap-1.5 text-xs sm:text-sm font-bold font-mono px-3 py-1 border-2 border-black shadow-[3px_3px_0px_0px_#000] ${
-          theme === 'dark' ? 'bg-[#16181a] text-white' : 'bg-white text-black'
+        {/* Streak Indicator */}
+        <div className={`flex items-center gap-1.5 text-xs sm:text-sm font-bold font-mono px-3.5 py-1.5 rounded-full border transition-all ${
+          isDark ? 'glass-pill-dark text-white' : 'glass-pill-light text-black'
         }`}>
-          <Flame className="w-4 h-4 text-[#E2FF00] fill-[#E2FF00]" />
-          <span>STREAK: <strong className="text-[#E2FF00] text-base">{currentStreak}</strong></span>
+          <Flame className="w-4 h-4 text-[#e63946] fill-[#e63946]" />
+          <span>ALIVE: <strong className="text-[#e63946] font-mono text-sm sm:text-base">{currentStreak}</strong></span>
         </div>
 
-        <div className={`hidden sm:flex items-center gap-1.5 text-xs sm:text-sm font-bold font-mono px-3 py-1 border-2 border-black shadow-[3px_3px_0px_0px_#000] ${
-          theme === 'dark' ? 'bg-[#16181a] text-slate-300' : 'bg-white text-slate-700'
+        {/* High Score */}
+        <div className={`hidden sm:flex items-center gap-1.5 text-xs sm:text-sm font-bold font-mono px-3.5 py-1.5 rounded-full border transition-all ${
+          isDark ? 'glass-pill-dark text-slate-300' : 'glass-pill-light text-slate-700'
         }`}>
-          <Trophy className="w-3.5 h-3.5 text-[#E2FF00]" />
-          <span>BEST: <strong className="font-mono text-base">{bestStreak}</strong></span>
+          <Trophy className="w-3.5 h-3.5 text-[#f4e4d0]" />
+          <span>BEST: <strong className="font-mono text-sm sm:text-base text-[#f4e4d0]">{bestStreak}</strong></span>
         </div>
 
         {/* Theme Toggle Button */}
         <button
           onClick={handleThemeClick}
           aria-label="Toggle Theme"
-          className={`p-1.5 border-2 border-black shadow-[3px_3px_0px_0px_#000] transition-all cursor-pointer flex items-center gap-1 font-mono text-xs font-bold active:translate-x-0.5 active:translate-y-0.5 active:shadow-none ${
-            theme === 'dark' ? 'bg-[#16181a] text-white' : 'bg-white text-black'
+          className={`p-2 rounded-full border transition-all cursor-pointer flex items-center justify-center active:scale-95 ${
+            isDark ? 'glass-pill-dark text-white hover:border-[#e63946]' : 'glass-pill-light text-black hover:border-black'
           }`}
         >
-          {theme === 'dark' ? (
-            <>
-              <Sun className="w-4 h-4 text-[#E2FF00]" />
-              <span className="hidden sm:inline">LIGHT</span>
-            </>
+          {isDark ? (
+            <Sun className="w-4 h-4 text-[#f4e4d0]" />
           ) : (
-            <>
-              <Moon className="w-4 h-4 text-black" />
-              <span className="hidden sm:inline">DARK</span>
-            </>
+            <Moon className="w-4 h-4 text-slate-900" />
           )}
         </button>
 
