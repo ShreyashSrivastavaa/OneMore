@@ -21,6 +21,15 @@ export default function StartScreen({ bestStreak, stats, theme = 'dark', onStart
       {/* Hero Entrance Section */}
       <div className="relative z-10 my-auto flex flex-col items-center max-w-xl w-full space-y-5 sm:space-y-6 animate-pop px-2">
         
+        {/* Custom Logo Image Badge */}
+        <div className="flex items-center justify-center">
+          <img
+            src="/PLAYSTILLALIVE.png"
+            alt="PLAY STILL ALIVE Logo"
+            className="w-20 h-20 sm:w-24 sm:h-24 object-contain rounded-3xl border-2 border-white/20 shadow-2xl animate-pop"
+          />
+        </div>
+
         {/* Available Live Badge */}
         <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-mono tracking-wider uppercase ${
           isDark ? 'glass-pill-dark text-slate-300' : 'glass-pill-light text-slate-700'
@@ -68,37 +77,34 @@ export default function StartScreen({ bestStreak, stats, theme = 'dark', onStart
           </div>
         </div>
 
-        {/* Action Buttons: Play + Leaderboard */}
-        <div className="w-full max-w-md space-y-3">
-          <button
-            onClick={handleStart}
-            className="w-full py-4 sm:py-5 px-8 rounded-full btn-portfolio-red font-extrabold text-xl sm:text-2xl tracking-wider uppercase flex items-center justify-center gap-3 cursor-pointer group"
-          >
-            <Play className="w-6 h-6 sm:w-7 sm:h-7 fill-white" />
-            <span>START RUN →</span>
-          </button>
+        {/* Main CTA Button */}
+        <button
+          onClick={handleStart}
+          className="w-full py-5 px-8 rounded-2xl btn-portfolio-red font-black font-sans text-xl sm:text-2xl uppercase tracking-wider flex items-center justify-center gap-3 transition-all cursor-pointer active:scale-95 shadow-2xl pt-4"
+        >
+          <Play className="w-6 h-6 fill-current" />
+          <span>START GAME</span>
+          <ArrowRight className="w-6 h-6 stroke-[3]" />
+        </button>
 
-          <button
-            onClick={() => {
-              playTapSound();
-              if (onOpenLeaderboard) onOpenLeaderboard();
-            }}
-            className={`w-full py-3.5 px-6 rounded-full font-mono text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 border transition-all cursor-pointer ${
-              isDark ? 'glass-pill-dark text-slate-200 hover:border-[#e63946]' : 'glass-pill-light text-slate-800'
-            }`}
-          >
-            <Trophy className="w-4 h-4 text-[#e63946]" />
-            <span>VIEW GLOBAL LEADERBOARD</span>
-          </button>
-        </div>
+        {/* Global Leaderboard Button */}
+        <button
+          onClick={() => {
+            playTapSound();
+            if (onOpenLeaderboard) onOpenLeaderboard();
+          }}
+          className={`w-full py-3 px-6 rounded-2xl border font-mono text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-95 ${
+            isDark ? 'glass-pill-dark text-slate-300 hover:border-[#00E664]' : 'glass-pill-light text-slate-700 hover:border-black'
+          }`}
+        >
+          <Trophy className="w-4 h-4 text-[#00E664]" />
+          <span>VIEW GLOBAL LEADERBOARD</span>
+        </button>
 
       </div>
 
-      {/* Footer Info */}
-      <div className="relative z-10 w-full max-w-md pb-4 text-[10px] sm:text-xs font-mono text-slate-500 font-bold uppercase tracking-widest flex items-center justify-center gap-2">
-        <Zap className="w-3.5 h-3.5 text-[#e63946]" />
-        <span>INSTANT PLAY • HIGHER / LOWER TRIVIA</span>
-      </div>
+      {/* Footer Spacer */}
+      <div className="h-6 sm:h-8" />
     </div>
   );
 }

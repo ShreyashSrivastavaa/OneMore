@@ -15,12 +15,16 @@ export default function Header({ currentStreak, bestStreak, theme, onToggleTheme
 
   return (
     <header className="absolute top-0 left-0 right-0 z-30 px-3 sm:px-8 py-4 flex items-center justify-between">
-      {/* Brand Title Badge with Live Status Dot */}
+      {/* Brand Title Badge with Custom Logo Image */}
       <div className="flex items-center gap-2">
-        <div className={`flex items-center gap-2.5 px-3.5 sm:px-4 py-1.5 rounded-full border transition-all ${
+        <div className={`flex items-center gap-2.5 px-3 sm:px-4 py-1.5 rounded-full border transition-all ${
           isDark ? 'glass-pill-dark text-[#f4e4d0]' : 'glass-pill-light text-black'
         }`}>
-          <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981] animate-pulse" />
+          <img
+            src="/PLAYSTILLALIVE.png"
+            alt="PLAY STILL ALIVE Logo"
+            className="w-6 h-6 object-contain rounded-full border border-white/20 shadow-sm"
+          />
           <span className="font-black text-xs sm:text-sm tracking-wider uppercase font-mono">
             PLAY STILL ALIVE
           </span>
