@@ -85,11 +85,7 @@ export default function GameScreen({
       </div>
 
       {/* Action Buttons: HIGHER / LOWER */}
-      <div className="w-full pt-3 pb-2 space-y-2">
-        <p className="text-xs text-center text-slate-400 font-semibold uppercase tracking-wider">
-          Is <span className="text-white font-bold">{question.entityB}</span> higher or lower than <span className="text-white font-bold">{question.entityA}</span>?
-        </p>
-
+      <div className="w-full pt-3 pb-2">
         <div className="grid grid-cols-2 gap-3">
           <button
             onClick={() => handleGuess('HIGHER')}

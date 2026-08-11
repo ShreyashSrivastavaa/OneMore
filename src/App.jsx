@@ -100,7 +100,15 @@ export default function App() {
         setIsNewBest(true);
       }
 
-      setCurrentScreen(SCREEN.RESULT_CORRECT);
+      // Directly get and load next question
+      const q = getNextQuestion(nextStreak, usedQuestionIds);
+      const newUsedIds = new Set(usedQuestionIds);
+      newUsedIds.add(q.id);
+
+      setUsedQuestionIds(newUsedIds);
+      setCurrentQuestion(q);
+      // Stay on GAME screen
+      setCurrentScreen(SCREEN.GAME);
     } else {
       const recordBroken = saveBestStreak(currentStreak);
       if (recordBroken) {
@@ -109,16 +117,6 @@ export default function App() {
       }
       setCurrentScreen(SCREEN.RESULT_WRONG);
     }
-  };
-
-  const handleNextQuestion = () => {
-    const q = getNextQuestion(currentStreak, usedQuestionIds);
-    const newUsedIds = new Set(usedQuestionIds);
-    newUsedIds.add(q.id);
-
-    setUsedQuestionIds(newUsedIds);
-    setCurrentQuestion(q);
-    setCurrentScreen(SCREEN.GAME);
   };
 
   return (
@@ -140,17 +138,10 @@ export default function App() {
 
         {currentScreen === SCREEN.GAME && currentQuestion && (
           <GameScreen
+            key={currentQuestion.id}
             question={currentQuestion}
             currentStreak={currentStreak}
             onGuess={handleGuess}
-          />
-        )}
-
-        {currentScreen === SCREEN.RESULT_CORRECT && currentQuestion && (
-          <ResultCorrectScreen
-            question={currentQuestion}
-            newStreak={currentStreak}
-            onNextQuestion={handleNextQuestion}
           />
         )}
 
