@@ -22,14 +22,14 @@ export default function StartScreen({ bestStreak, stats, theme = 'dark', onStart
         
         {/* Brand Stamp Header */}
         <div className="space-y-3 sm:space-y-4">
-          <div className="inline-block bg-[#E2FF00] text-black font-black text-4xl sm:text-7xl font-mono px-5 sm:px-6 py-2 border-3 sm:border-4 border-black shadow-[6px_6px_0px_0px_#000] sm:shadow-[8px_8px_0px_0px_#000] tracking-tighter uppercase transform -rotate-2">
-            ONE MORE
+          <div className="inline-block bg-[#E2FF00] text-black font-black text-4xl sm:text-6xl font-mono px-5 sm:px-6 py-2 border-3 sm:border-4 border-black shadow-[6px_6px_0px_0px_#000] sm:shadow-[8px_8px_0px_0px_#000] tracking-tighter uppercase transform -rotate-2">
+            PLAY STILL ALIVE
           </div>
           
           <p className={`text-lg sm:text-2xl font-bold max-w-sm mx-auto leading-snug ${
             isDark ? 'text-[#F5F3E9]' : 'text-slate-900'
           }`}>
-            Which entity ranks higher? One mistake ends the streak.
+            How long can you stay alive? One mistake ends your run.
           </p>
         </div>
 

@@ -64,7 +64,7 @@ export default function ResultCorrectScreen({
           onClick={handleNext}
           className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-400 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xl tracking-wider uppercase shadow-xl shadow-emerald-500/20 active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-3 cursor-pointer"
         >
-          <span>ONE MORE</span>
+          <span>KEEP ALIVE</span>
           <ArrowRight className="w-6 h-6 stroke-[3]" />
         </button>
         <p className="text-xs text-slate-500">Tap or press Space to continue</p>

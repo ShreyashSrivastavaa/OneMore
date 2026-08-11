@@ -177,7 +177,7 @@ export default function App() {
       <footer className={`py-2 text-center text-[11px] font-mono uppercase tracking-wider ${
         theme === 'dark' ? 'text-slate-600' : 'text-slate-400'
       }`}>
-        ONE MORE • TACTILE TRIVIA GAME
+        PLAY STILL ALIVE • TACTILE TRIVIA GAME
       </footer>
     </div>
   );

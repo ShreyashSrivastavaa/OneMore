@@ -199,12 +199,12 @@ export default function GameScreen({
           {isCorrect ? (
             <div className="inline-flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 bg-[#00E664] text-black font-black text-lg sm:text-xl font-mono border-3 sm:border-4 border-black shadow-[5px_5px_0px_0px_#000] transform -rotate-1">
               <Check className="w-6 h-6 sm:w-7 sm:h-7 stroke-[3]" />
-              <span>CORRECT! +1 STREAK</span>
+              <span>STILL ALIVE (+1 STREAK)</span>
             </div>
           ) : (
             <div className="inline-flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 bg-[#FF3333] text-white font-black text-lg sm:text-xl font-mono border-3 sm:border-4 border-black shadow-[5px_5px_0px_0px_#000] transform rotate-1">
               <X className="w-6 h-6 sm:w-7 sm:h-7 stroke-[3]" />
-              <span>WRONG!</span>
+              <span>YOU'RE OUT</span>
             </div>
           )}
         </div>
@@ -213,7 +213,7 @@ export default function GameScreen({
       {/* Footer info */}
       {!revealed && (
         <div className="relative z-10 pb-2 text-[10px] sm:text-xs font-mono text-slate-400 font-bold uppercase tracking-widest">
-          TAP YOUR GUESS TO REVEAL
+          TAP YOUR GUESS TO STAY ALIVE
         </div>
       )}
     </div>

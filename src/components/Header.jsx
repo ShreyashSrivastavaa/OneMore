@@ -14,7 +14,7 @@ export default function Header({ currentStreak, bestStreak, theme, onToggleTheme
       {/* Brand Title Badge */}
       <div className="flex items-center gap-2">
         <div className="bg-[#E2FF00] text-black font-black text-lg sm:text-xl font-mono px-3 py-1 border-3 border-black shadow-[3px_3px_0px_0px_#000] tracking-tighter uppercase transform -rotate-1">
-          ONE MORE
+          PLAY STILL ALIVE
         </div>
       </div>
 

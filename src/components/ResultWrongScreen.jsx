@@ -45,7 +45,7 @@ export default function ResultWrongScreen({
         
         {/* Wrong Banner Stamp */}
         <div className="inline-block bg-[#FF3333] text-white font-black text-3xl sm:text-5xl font-mono px-5 sm:px-6 py-2 border-3 sm:border-4 border-black shadow-[4px_4px_0px_0px_#000] sm:shadow-[6px_6px_0px_0px_#000] uppercase tracking-tight transform -rotate-2">
-          GAME OVER
+          YOU'RE OUT
         </div>
 
         {/* Fact Breakdown */}
@@ -99,14 +99,14 @@ export default function ResultWrongScreen({
           className="w-full py-4 sm:py-5 px-6 sm:px-8 brutal-btn-yellow font-black text-2xl sm:text-3xl tracking-wider uppercase flex items-center justify-center gap-3 cursor-pointer group active:scale-95"
         >
           <RotateCcw className="w-6 h-6 sm:w-7 sm:h-7 stroke-[3]" />
-          <span>TRY AGAIN</span>
+          <span>PLAY AGAIN</span>
         </button>
 
       </div>
 
       {/* Bottom spacer */}
       <div className="relative z-10 w-full max-w-md pb-4 font-mono text-[10px] sm:text-xs text-slate-400 font-bold uppercase tracking-widest">
-        ONE MORE • TACTILE TRIVIA GAME
+        PLAY STILL ALIVE • TACTILE TRIVIA GAME
       </div>
     </div>
   );
