@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import EntityCard from './EntityCard';
-import { ArrowUpRight, ArrowDownRight, Flame } from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowUp, ArrowDown, Check, X } from 'lucide-react';
+import { getEntityImage } from '../utils/images';
 import { playTapSound, playCorrectSound, playWrongSound } from '../utils/audio';
 
 export default function GameScreen({
@@ -12,9 +12,7 @@ export default function GameScreen({
   const [selectedGuess, setSelectedGuess] = useState(null); // 'HIGHER' or 'LOWER'
   const [isCorrect, setIsCorrect] = useState(null);
 
-  // Question details
-  // Note: question.valueB vs question.valueA
-  // Is B higher than A?
+  // Determine if B's actual numeric value is higher than A
   const bIsHigher = question.valueB >= question.valueA;
 
   const handleGuess = (guess) => {
@@ -33,89 +31,121 @@ export default function GameScreen({
       playWrongSound();
     }
 
-    // Wait ~500ms for reveal feedback animation, then trigger result callback
+    // Fast 600ms reveal transition to next question or game over screen
     setTimeout(() => {
       onGuess(userIsRight);
-    }, 600);
+    }, 650);
   };
 
+  const imageA = getEntityImage(question.entityA, question.category);
+  const imageB = getEntityImage(question.entityB, question.category);
+
   return (
-    <div className="flex-1 flex flex-col items-center justify-between w-full max-w-md mx-auto px-4 py-3 animate-pop-in">
-      {/* Question Header */}
-      <div className="w-full text-center space-y-1 mb-2">
-        <h2 className="text-xl sm:text-2xl font-black text-white leading-snug font-sans">
-          Which has more {question.category.toLowerCase() === 'geography' || question.category.toLowerCase() === 'science' ? '' : question.category}{' '}
-          <span className="text-amber-400 font-extrabold underline decoration-amber-500/50 underline-offset-4">
-            {question.metric.toLowerCase()}
-          </span>?
-        </h2>
-      </div>
-
-      {/* Comparison Cards Section */}
-      <div className="w-full flex-1 flex flex-col justify-center gap-3 my-auto">
-        {/* Entity A */}
-        <EntityCard
-          entityName={question.entityA}
-          displayValue={question.displayA}
-          category={question.category}
-          metric={question.metric}
-          isRevealed={true}
-          isCardB={false}
+    <div className="relative w-full min-h-screen flex flex-col md:flex-row overflow-hidden bg-slate-950 selection:bg-amber-400">
+      
+      {/* LEFT HALF - ENTITY A */}
+      <div className="relative flex-1 min-h-[50vh] md:min-h-screen flex flex-col items-center justify-center p-6 text-center overflow-hidden">
+        {/* Background Image & Dark Overlay */}
+        <div
+          className="absolute inset-0 bg-cover bg-center transition-transform duration-700 scale-105"
+          style={{ backgroundImage: `url(${imageA})` }}
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-slate-950/50 backdrop-blur-[1px]" />
 
-        {/* OR / VS Divider */}
-        <div className="relative flex items-center justify-center my-[-6px] z-10">
-          <div className="px-3 py-1 rounded-full bg-slate-900 border border-slate-700 text-slate-400 font-black text-xs tracking-widest shadow-md">
-            OR
+        {/* Entity A Content */}
+        <div className="relative z-10 max-w-md space-y-2 animate-pop-in">
+          <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight drop-shadow-lg font-sans">
+            “{question.entityA}”
+          </h2>
+          <p className="text-slate-300 font-semibold text-lg sm:text-xl uppercase tracking-wider">
+            has
+          </p>
+          <div className="text-4xl sm:text-6xl font-black text-yellow-400 font-mono tracking-tight drop-shadow-xl my-2">
+            {question.displayA}
           </div>
+          <p className="text-slate-200 text-sm sm:text-base font-bold uppercase tracking-widest opacity-90">
+            {question.metric}
+          </p>
         </div>
-
-        {/* Entity B */}
-        <EntityCard
-          entityName={question.entityB}
-          displayValue={question.displayB}
-          category={question.category}
-          metric={question.metric}
-          isRevealed={revealed}
-          isCardB={true}
-          isCorrect={revealed && isCorrect}
-          isWrong={revealed && !isCorrect}
-          onTap={() => handleGuess('HIGHER')}
-        />
       </div>
 
-      {/* Action Buttons: HIGHER / LOWER */}
-      <div className="w-full pt-3 pb-2">
-        <div className="grid grid-cols-2 gap-3">
-          <button
-            onClick={() => handleGuess('HIGHER')}
-            disabled={revealed}
-            className={`py-4 px-3 rounded-2xl font-black text-lg sm:text-xl tracking-wider uppercase flex items-center justify-center gap-2 shadow-lg transition-all duration-150 cursor-pointer ${
-              revealed && selectedGuess === 'HIGHER'
-                ? isCorrect
-                  ? 'bg-emerald-500 text-slate-950 ring-4 ring-emerald-400/50 scale-95'
-                  : 'bg-red-500 text-white ring-4 ring-red-400/50 scale-95'
-                : 'bg-emerald-500 hover:bg-emerald-400 active:scale-[0.97] text-slate-950 shadow-emerald-500/20'
-            } ${revealed && selectedGuess !== 'HIGHER' ? 'opacity-40 pointer-events-none' : ''}`}
-          >
-            <ArrowUpRight className="w-6 h-6 stroke-[3]" />
-            <span>HIGHER</span>
-          </button>
+      {/* CENTER VS CIRCULAR BADGE */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+        <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white text-slate-950 font-black text-lg sm:text-xl flex items-center justify-center shadow-2xl border-4 border-slate-950 animate-pulse-glow">
+          VS
+        </div>
+      </div>
 
-          <button
-            onClick={() => handleGuess('LOWER')}
-            disabled={revealed}
-            className={`py-4 px-3 rounded-2xl font-black text-lg sm:text-xl tracking-wider uppercase flex items-center justify-center gap-2 shadow-lg transition-all duration-150 cursor-pointer ${
-              revealed && selectedGuess === 'LOWER'
-                ? isCorrect
-                  ? 'bg-emerald-500 text-slate-950 ring-4 ring-emerald-400/50 scale-95'
-                  : 'bg-red-500 text-white ring-4 ring-red-400/50 scale-95'
-                : 'bg-red-500 hover:bg-red-400 active:scale-[0.97] text-white shadow-red-500/20'
-            } ${revealed && selectedGuess !== 'LOWER' ? 'opacity-40 pointer-events-none' : ''}`}
-          >
-            <ArrowDownRight className="w-6 h-6 stroke-[3]" />
-            <span>LOWER</span>
-          </button>
+      {/* RIGHT HALF - ENTITY B */}
+      <div className="relative flex-1 min-h-[50vh] md:min-h-screen flex flex-col items-center justify-center p-6 text-center overflow-hidden">
+        {/* Background Image & Dark Overlay */}
+        <div
+          className="absolute inset-0 bg-cover bg-center transition-transform duration-700 scale-105"
+          style={{ backgroundImage: `url(${imageB})` }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-slate-950/50 backdrop-blur-[1px]" />
+
+        {/* Entity B Content */}
+        <div className="relative z-10 max-w-md space-y-3 w-full px-4 animate-pop-in">
+          <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight drop-shadow-lg font-sans">
+            “{question.entityB}”
+          </h2>
+          <p className="text-slate-300 font-semibold text-lg sm:text-xl uppercase tracking-wider">
+            has
+          </p>
+
+          {/* Interactive Choices or Revealed Value */}
+          {!revealed ? (
+            <div className="space-y-4 pt-2">
+              <div className="flex flex-col items-center gap-3 w-full max-w-xs mx-auto">
+                {/* MORE BUTTON */}
+                <button
+                  onClick={() => handleGuess('HIGHER')}
+                  className="w-full py-3.5 sm:py-4 px-6 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 border-2 border-white/80 text-white font-black text-xl sm:text-2xl tracking-wider flex items-center justify-center gap-2 shadow-2xl backdrop-blur-md transition-all cursor-pointer group"
+                >
+                  <span>MORE</span>
+                  <ArrowUp className="w-6 h-6 stroke-[3] group-hover:-translate-y-1 transition-transform" />
+                </button>
+
+                {/* LESS BUTTON */}
+                <button
+                  onClick={() => handleGuess('LOWER')}
+                  className="w-full py-3.5 sm:py-4 px-6 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 border-2 border-white/80 text-white font-black text-xl sm:text-2xl tracking-wider flex items-center justify-center gap-2 shadow-2xl backdrop-blur-md transition-all cursor-pointer group"
+                >
+                  <span>LESS</span>
+                  <ArrowDown className="w-6 h-6 stroke-[3] group-hover:translate-y-1 transition-transform" />
+                </button>
+              </div>
+
+              <p className="text-slate-300 text-xs sm:text-sm font-semibold tracking-wider uppercase opacity-80 pt-1">
+                {question.metric} than {question.entityA}
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-2 animate-pop-in">
+              <div className="text-4xl sm:text-6xl font-black text-yellow-400 font-mono tracking-tight drop-shadow-xl my-2">
+                {question.displayB}
+              </div>
+              <p className="text-slate-200 text-sm sm:text-base font-bold uppercase tracking-widest opacity-90">
+                {question.metric}
+              </p>
+
+              {/* Reveal Result Badge */}
+              <div className="pt-2 flex justify-center">
+                {isCorrect ? (
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500 text-slate-950 font-black text-base shadow-2xl animate-pop-in">
+                    <Check className="w-5 h-5 stroke-[3]" />
+                    <span>CORRECT!</span>
+                  </div>
+                ) : (
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500 text-white font-black text-base shadow-2xl animate-shake">
+                    <X className="w-5 h-5 stroke-[3]" />
+                    <span>WRONG!</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
