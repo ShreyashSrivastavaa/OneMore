@@ -4,22 +4,24 @@ import { Flame, Trophy } from 'lucide-react';
 
 export default function Header({ currentStreak, bestStreak }) {
   return (
-    <header className="absolute top-0 left-0 right-0 z-30 px-4 py-3 flex items-center justify-between bg-gradient-to-b from-slate-950/90 to-transparent backdrop-blur-[2px]">
+    <header className="absolute top-0 left-0 right-0 z-30 px-4 py-3 flex items-center justify-between">
+      {/* Brand Title Badge */}
       <div className="flex items-center gap-2">
-        <h1 className="text-xl sm:text-2xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 font-mono">
+        <div className="bg-[#E2FF00] text-black font-black text-lg sm:text-xl font-mono px-3 py-1 border-3 border-black shadow-[3px_3px_0px_0px_#000] tracking-tighter uppercase transform -rotate-1">
           ONE MORE
-        </h1>
+        </div>
       </div>
 
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-1.5 text-white text-xs sm:text-sm font-bold bg-black/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 shadow-lg">
-          <Flame className="w-4 h-4 text-amber-400 fill-amber-400" />
-          <span>Score: <strong className="text-amber-400 font-mono text-base">{currentStreak}</strong></span>
+      {/* Score HUD Badges */}
+      <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1.5 bg-[#16181a] text-white text-xs sm:text-sm font-bold font-mono px-3 py-1 border-2 border-black shadow-[3px_3px_0px_0px_#000]">
+          <Flame className="w-4 h-4 text-[#E2FF00] fill-[#E2FF00]" />
+          <span>STREAK: <strong className="text-[#E2FF00] text-base">{currentStreak}</strong></span>
         </div>
 
-        <div className="hidden sm:flex items-center gap-1.5 text-white/80 text-xs sm:text-sm font-bold bg-black/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 shadow-lg">
-          <Trophy className="w-3.5 h-3.5 text-amber-400" />
-          <span>High Score: <strong className="text-amber-400 font-mono text-base">{bestStreak}</strong></span>
+        <div className="hidden sm:flex items-center gap-1.5 bg-[#16181a] text-slate-300 text-xs sm:text-sm font-bold font-mono px-3 py-1 border-2 border-black shadow-[3px_3px_0px_0px_#000]">
+          <Trophy className="w-3.5 h-3.5 text-[#E2FF00]" />
+          <span>BEST: <strong className="text-white text-base">{bestStreak}</strong></span>
         </div>
 
         <SoundToggle />

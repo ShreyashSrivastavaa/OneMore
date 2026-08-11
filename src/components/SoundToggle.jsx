@@ -16,13 +16,13 @@ export default function SoundToggle() {
   return (
     <button
       onClick={handleToggle}
-      aria-label={enabled ? 'Mute sound effects' : 'Enable sound effects'}
-      className="p-2 rounded-xl bg-slate-800/80 border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-700 transition-colors cursor-pointer flex items-center gap-1.5 text-xs font-semibold"
+      aria-label={enabled ? 'Mute sound' : 'Enable sound'}
+      className="p-1.5 bg-[#16181a] border-2 border-black shadow-[3px_3px_0px_0px_#000] text-white hover:bg-slate-800 transition-all cursor-pointer flex items-center gap-1 font-mono text-xs font-bold active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
     >
       {enabled ? (
         <>
-          <Volume2 className="w-4 h-4 text-amber-400" />
-          <span className="hidden sm:inline">SOUND ON</span>
+          <Volume2 className="w-4 h-4 text-[#E2FF00]" />
+          <span className="hidden sm:inline">AUDIO ON</span>
         </>
       ) : (
         <>

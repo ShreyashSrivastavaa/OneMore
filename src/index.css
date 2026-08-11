@@ -1,30 +1,81 @@
 @import "tailwindcss";
 
+@layer base {
+  body {
+    font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  .font-mono {
+    font-family: 'Space Mono', monospace;
+  }
+}
+
 @layer utilities {
-  /* Prevent blue tap highlight on mobile browsers */
   * {
     -webkit-tap-highlight-color: transparent;
     user-select: none;
   }
 }
 
-/* Custom CSS animations */
-@keyframes pulseGlow {
-  0%, 100% {
-    box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
-  }
-  50% {
-    box-shadow: 0 0 30px rgba(245, 158, 11, 0.6);
-  }
+/* Neo-brutalist Tactile Styles */
+.brutal-box {
+  background: #16181a;
+  border: 3px solid #000000;
+  box-shadow: 4px 4px 0px 0px #000000;
 }
 
-@keyframes popIn {
+.brutal-box-yellow {
+  background: #E2FF00;
+  color: #000000;
+  border: 3px solid #000000;
+  box-shadow: 5px 5px 0px 0px #000000;
+}
+
+.brutal-btn {
+  background: #ffffff;
+  color: #000000;
+  border: 3px solid #000000;
+  box-shadow: 5px 5px 0px 0px #000000;
+  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.brutal-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0px 0px #000000;
+}
+
+.brutal-btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0px 0px #000000;
+}
+
+.brutal-btn-yellow {
+  background: #E2FF00;
+  color: #000000;
+  border: 3px solid #000000;
+  box-shadow: 5px 5px 0px 0px #000000;
+  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.brutal-btn-yellow:hover {
+  background: #eeff33;
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0px 0px #000000;
+}
+
+.brutal-btn-yellow:active {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0px 0px #000000;
+}
+
+/* Micro Animations */
+@keyframes brutalPop {
   0% {
-    transform: scale(0.9);
+    transform: scale(0.92);
     opacity: 0;
   }
-  70% {
-    transform: scale(1.05);
+  60% {
+    transform: scale(1.03);
   }
   100% {
     transform: scale(1);
@@ -32,61 +83,21 @@
   }
 }
 
-@keyframes floatSlow {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
+@keyframes flashCorrect {
+  0% { background-color: #00E664; }
+  100% { background-color: transparent; }
 }
 
-@keyframes shakeWrong {
+@keyframes shakeHard {
   0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-8px); }
-  40%, 80% { transform: translateX(8px); }
+  20%, 60% { transform: translateX(-10px); }
+  40%, 80% { transform: translateX(10px); }
 }
 
-.animate-pop-in {
-  animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+.animate-pop {
+  animation: brutalPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
-.animate-pulse-glow {
-  animation: pulseGlow 2s infinite ease-in-out;
-}
-
-.animate-float {
-  animation: floatSlow 3s ease-in-out infinite;
-}
-
-.animate-shake {
-  animation: shakeWrong 0.4s ease-in-out;
-}
-
-/* Glassmorphism card styles */
-.glass-card {
-  background: rgba(30, 41, 59, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.glass-card-hover {
-  transition: all 0.2s ease-in-out;
-}
-
-.glass-card-hover:active {
-  transform: scale(0.98);
-}
-
-/* Custom scrollbars */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #0f172a;
-}
-::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 9999px;
+.animate-shake-hard {
+  animation: shakeHard 0.35s ease-in-out;
 }
