@@ -36,6 +36,13 @@ export const setPlayerName = (name) => {
   } catch (e) {}
 };
 
+export const clearPlayerName = () => {
+  try {
+    localStorage.removeItem('psa_player_name');
+    localStorage.removeItem('psa_player_email');
+  } catch (e) {}
+};
+
 export const submitScoreToLeaderboard = (playerName, streak) => {
   if (!playerName || streak <= 0) return getLeaderboard();
 
