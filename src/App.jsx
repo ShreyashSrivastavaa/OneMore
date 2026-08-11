@@ -2,16 +2,15 @@ import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import StartScreen from './components/StartScreen';
 import GameScreen from './components/GameScreen';
-import ResultCorrectScreen from './components/ResultCorrectScreen';
 import ResultWrongScreen from './components/ResultWrongScreen';
 import questionsData from './data/questions.json';
 import { getBestStreak, saveBestStreak, getGameStats, updateGameStats } from './utils/storage';
+import { generateRoundData } from './utils/formatters';
+import { preloadQuestionImages } from './utils/images';
 
-// Screens enum
 const SCREEN = {
   START: 'START',
   GAME: 'GAME',
-  RESULT_CORRECT: 'RESULT_CORRECT',
   RESULT_WRONG: 'RESULT_WRONG',
 };
 
@@ -23,14 +22,27 @@ export default function App() {
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [usedQuestionIds, setUsedQuestionIds] = useState(new Set());
   const [isNewBest, setIsNewBest] = useState(false);
+  const [theme, setTheme] = useState(() => {
+    try {
+      return localStorage.getItem('onemore_theme') || 'dark';
+    } catch (e) {
+      return 'dark';
+    }
+  });
 
-  // Load initial best streak & stats from localStorage
+  const handleToggleTheme = () => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(nextTheme);
+    try {
+      localStorage.setItem('onemore_theme', nextTheme);
+    } catch (e) {}
+  };
+
   useEffect(() => {
     setBestStreak(getBestStreak());
     setStats(getGameStats());
   }, []);
 
-  // Helper to pick next question based on current streak
   const getNextQuestion = (streak, usedIds) => {
     let targetDifficulty = 'Easy';
     if (streak >= 12) {
@@ -39,17 +51,14 @@ export default function App() {
       targetDifficulty = 'Medium';
     }
 
-    // Filter questions by difficulty that haven't been used yet
     let available = questionsData.filter(
       (q) => q.difficulty === targetDifficulty && !usedIds.has(q.id)
     );
 
-    // Fallback if difficulty tier exhausted
     if (available.length === 0) {
       available = questionsData.filter((q) => !usedIds.has(q.id));
     }
 
-    // Total fallback if all questions used in session
     if (available.length === 0) {
       available = questionsData;
     }
@@ -57,22 +66,24 @@ export default function App() {
     const randomIndex = Math.floor(Math.random() * available.length);
     const rawQuestion = available[randomIndex];
 
-    // Randomize A/B orientation 50/50
-    const swap = Math.random() < 0.5;
-    const formattedQuestion = {
-      id: rawQuestion.id,
-      category: rawQuestion.category,
-      metric: rawQuestion.metric,
-      entityA: swap ? rawQuestion.entityB : rawQuestion.entityA,
-      entityB: swap ? rawQuestion.entityA : rawQuestion.entityB,
-      valueA: swap ? rawQuestion.valueB : rawQuestion.valueA,
-      valueB: swap ? rawQuestion.valueA : rawQuestion.valueB,
-      displayA: swap ? rawQuestion.displayB : rawQuestion.displayA,
-      displayB: swap ? rawQuestion.displayA : rawQuestion.displayB,
-    };
-
-    return formattedQuestion;
+    return generateRoundData(rawQuestion, streak);
   };
+
+  // Immediate Background Preloading for Current & Next Questions
+  useEffect(() => {
+    if (currentQuestion && currentScreen === SCREEN.GAME) {
+      // 1. High priority preload for current question
+      preloadQuestionImages(currentQuestion);
+
+      // 2. Preload NEXT question images immediately in the background
+      try {
+        const nextQ = getNextQuestion(currentStreak + 1, usedQuestionIds);
+        if (nextQ) {
+          preloadQuestionImages(nextQ);
+        }
+      } catch (e) {}
+    }
+  }, [currentQuestion, currentStreak, currentScreen, usedQuestionIds]);
 
   const handleStartGame = () => {
     setCurrentStreak(0);
@@ -84,6 +95,9 @@ export default function App() {
     setUsedQuestionIds(newUsedIds);
     setCurrentQuestion(q);
     setCurrentScreen(SCREEN.GAME);
+
+    // Preload first round images immediately
+    preloadQuestionImages(q);
   };
 
   const handleGuess = (isCorrect) => {
@@ -100,14 +114,12 @@ export default function App() {
         setIsNewBest(true);
       }
 
-      // Directly get and load next question
       const q = getNextQuestion(nextStreak, usedQuestionIds);
       const newUsedIds = new Set(usedQuestionIds);
       newUsedIds.add(q.id);
 
       setUsedQuestionIds(newUsedIds);
       setCurrentQuestion(q);
-      // Stay on GAME screen
       setCurrentScreen(SCREEN.GAME);
     } else {
       const recordBroken = saveBestStreak(currentStreak);
@@ -120,18 +132,22 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between selection:bg-amber-500 selection:text-slate-950 font-sans">
+    <div className={`min-h-screen flex flex-col justify-between transition-colors duration-200 ${
+      theme === 'dark' ? 'bg-[#0c0d0e] text-[#F5F3E9]' : 'bg-[#FAF8F5] text-[#0c0d0e]'
+    }`}>
       <Header
         currentStreak={currentStreak}
         bestStreak={bestStreak}
-        isGameScreen={currentScreen === SCREEN.GAME}
+        theme={theme}
+        onToggleTheme={handleToggleTheme}
       />
 
-      <main className="flex-1 flex flex-col justify-center py-2 px-2">
+      <main className="flex-1 flex flex-col justify-center">
         {currentScreen === SCREEN.START && (
           <StartScreen
             bestStreak={bestStreak}
             stats={stats}
+            theme={theme}
             onStart={handleStartGame}
           />
         )}
@@ -141,6 +157,7 @@ export default function App() {
             key={currentQuestion.id}
             question={currentQuestion}
             currentStreak={currentStreak}
+            theme={theme}
             onGuess={handleGuess}
           />
         )}
@@ -151,13 +168,16 @@ export default function App() {
             finalStreak={currentStreak}
             bestStreak={bestStreak}
             isNewBest={isNewBest}
+            theme={theme}
             onPlayAgain={handleStartGame}
           />
         )}
       </main>
 
-      <footer className="py-2 text-center text-[11px] text-slate-600 font-mono uppercase tracking-wider">
-        ONE MORE • Fast-Paced Comparison Game
+      <footer className={`py-2 text-center text-[11px] font-mono uppercase tracking-wider ${
+        theme === 'dark' ? 'text-slate-600' : 'text-slate-400'
+      }`}>
+        ONE MORE • TACTILE TRIVIA GAME
       </footer>
     </div>
   );

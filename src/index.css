@@ -1,8 +1,15 @@
 @import "tailwindcss";
 
 @layer base {
-  body {
+  html, body {
     font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    touch-action: manipulation;
+    overflow-x: hidden;
+    min-height: 100vh;
+    min-height: 100dvh;
   }
 
   .font-mono {
@@ -14,53 +21,45 @@
   * {
     -webkit-tap-highlight-color: transparent;
     user-select: none;
+    -webkit-user-select: none;
   }
 }
 
-/* Neo-brutalist Tactile Styles */
-.brutal-box {
+/* Light & Dark Mode Background Grids */
+.bg-grid-dark {
+  background-color: #0c0d0e;
+  background-image: radial-gradient(rgba(226, 255, 0, 0.08) 1px, transparent 0);
+  background-size: 28px 28px;
+}
+
+.bg-grid-light {
+  background-color: #f4f3ee;
+  background-image: radial-gradient(rgba(0, 0, 0, 0.08) 1px, transparent 0);
+  background-size: 28px 28px;
+}
+
+/* Neo-brutalist Tactile Utility Classes */
+.brutal-box-dark {
   background: #16181a;
+  color: #F5F3E9;
   border: 3px solid #000000;
   box-shadow: 4px 4px 0px 0px #000000;
 }
 
-.brutal-box-yellow {
-  background: #E2FF00;
-  color: #000000;
-  border: 3px solid #000000;
-  box-shadow: 5px 5px 0px 0px #000000;
-}
-
-.brutal-btn {
+.brutal-box-light {
   background: #ffffff;
-  color: #000000;
+  color: #0c0d0e;
   border: 3px solid #000000;
-  box-shadow: 5px 5px 0px 0px #000000;
-  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.brutal-btn:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 7px 7px 0px 0px #000000;
-}
-
-.brutal-btn:active {
-  transform: translate(3px, 3px);
-  box-shadow: 1px 1px 0px 0px #000000;
+  box-shadow: 4px 4px 0px 0px #000000;
 }
 
 .brutal-btn-yellow {
   background: #E2FF00;
   color: #000000;
   border: 3px solid #000000;
-  box-shadow: 5px 5px 0px 0px #000000;
-  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.brutal-btn-yellow:hover {
-  background: #eeff33;
-  transform: translate(-2px, -2px);
-  box-shadow: 7px 7px 0px 0px #000000;
+  box-shadow: 4px 4px 0px 0px #000000;
+  transition: transform 0.08s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.08s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
 }
 
 .brutal-btn-yellow:active {
@@ -68,36 +67,63 @@
   box-shadow: 1px 1px 0px 0px #000000;
 }
 
-/* Micro Animations */
+@media (hover: hover) {
+  .brutal-btn-yellow:hover {
+    background: #eeff33;
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px 0px #000000;
+  }
+}
+
+.brutal-btn-white {
+  background: #ffffff;
+  color: #000000;
+  border: 3px solid #000000;
+  box-shadow: 4px 4px 0px 0px #000000;
+  transition: transform 0.08s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.08s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.brutal-btn-white:active {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0px 0px #000000;
+}
+
+@media (hover: hover) {
+  .brutal-btn-white:hover {
+    background: #f5f5f5;
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px 0px #000000;
+  }
+}
+
+/* Micro Animations with GPU acceleration */
 @keyframes brutalPop {
   0% {
-    transform: scale(0.92);
+    transform: scale3d(0.94, 0.94, 1);
     opacity: 0;
   }
   60% {
-    transform: scale(1.03);
+    transform: scale3d(1.02, 1.02, 1);
   }
   100% {
-    transform: scale(1);
+    transform: scale3d(1, 1, 1);
     opacity: 1;
   }
 }
 
-@keyframes flashCorrect {
-  0% { background-color: #00E664; }
-  100% { background-color: transparent; }
-}
-
 @keyframes shakeHard {
-  0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-10px); }
-  40%, 80% { transform: translateX(10px); }
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  20%, 60% { transform: translate3d(-8px, 0, 0); }
+  40%, 80% { transform: translate3d(8px, 0, 0); }
 }
 
 .animate-pop {
-  animation: brutalPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation: brutalPop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  will-change: transform, opacity;
 }
 
 .animate-shake-hard {
-  animation: shakeHard 0.35s ease-in-out;
+  animation: shakeHard 0.3s ease-in-out;
+  will-change: transform;
 }
