@@ -5,6 +5,7 @@ import GameScreen from './components/GameScreen';
 import ResultWrongScreen from './components/ResultWrongScreen';
 import LeaderboardModal from './components/LeaderboardModal';
 import AuthModal from './components/AuthModal';
+import Preloader from './components/Preloader';
 import { getBestStreak, saveBestStreak, getGameStats, updateGameStats } from './utils/storage';
 import { generateDynamicQuestion } from './utils/questionEngine';
 import { preloadQuestionImages } from './utils/images';
@@ -18,6 +19,7 @@ const SCREEN = {
 };
 
 export default function App() {
+  const [isLoading, setIsLoading] = useState(true);
   const [currentScreen, setCurrentScreen] = useState(SCREEN.START);
   const [currentStreak, setCurrentStreak] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
@@ -172,6 +174,11 @@ export default function App() {
     <div className={`min-h-screen flex flex-col justify-between transition-colors duration-200 ${
       theme === 'dark' ? 'bg-[#050508] text-[#f4e4d0]' : 'bg-[#FAF8F5] text-[#0c0d0e]'
     }`}>
+      {/* Animated Preloader Screen */}
+      {isLoading && (
+        <Preloader onComplete={() => setIsLoading(false)} />
+      )}
+
       <Header
         currentStreak={currentStreak}
         bestStreak={bestStreak}
