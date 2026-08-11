@@ -122,7 +122,7 @@ export default function App() {
           } else {
             setCurrentScreen(SCREEN.RESULT_WRONG);
           }
-        }, 500);
+        }, 200);
 
         return res;
       } catch (e) {}
@@ -163,7 +163,7 @@ export default function App() {
         }
         setCurrentScreen(SCREEN.RESULT_WRONG);
       }
-    }, 500);
+    }, 200);
 
     return { correct: isCorrect };
   };

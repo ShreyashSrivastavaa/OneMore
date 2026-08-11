@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowUp, ArrowDown, Check, X, Flame } from 'lucide-react';
+import { ArrowUp, ArrowDown } from 'lucide-react';
 import { playTapSound, playCorrectSound, playWrongSound } from '../utils/audio';
-import { ROUND_FORMATS } from '../utils/formatters';
 import { getCategoryTheme } from '../utils/images';
 
 export default function GameScreen({
@@ -14,7 +13,6 @@ export default function GameScreen({
   const [userChoice, setUserChoice] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
 
-  const categoryTheme = getCategoryTheme(question.category);
   const isDark = theme === 'dark';
 
   // Reset local reveal state when new question arrives
@@ -24,24 +22,24 @@ export default function GameScreen({
     setIsCorrect(null);
   }, [question?.id]);
 
-  const handleUserChoice = async (choice) => {
+  const handleUserChoice = (choice) => {
     if (revealed) return;
 
+    // 1. Instant 0ms Visual & Audio Feedback
     playTapSound();
     setUserChoice(choice);
-
-    // Call App.jsx onGuess which validates via server or local engine
-    const result = await onGuess(choice);
-
-    const userIsRight = typeof result === 'boolean' ? result : result?.correct;
-    setIsCorrect(userIsRight);
     setRevealed(true);
 
-    if (userIsRight) {
-      playCorrectSound();
-    } else {
-      playWrongSound();
-    }
+    // 2. Concurrently execute answer check in background
+    onGuess(choice).then((result) => {
+      const userIsRight = typeof result === 'boolean' ? result : result?.correct;
+      setIsCorrect(userIsRight);
+      if (userIsRight) {
+        playCorrectSound();
+      } else {
+        playWrongSound();
+      }
+    });
   };
 
   return (
@@ -80,10 +78,10 @@ export default function GameScreen({
           {/* CARD A */}
           <div
             onClick={() => handleUserChoice('A')}
-            className={`group relative rounded-3xl border p-6 sm:p-8 min-h-[200px] sm:min-h-[240px] flex flex-col items-center justify-center text-center transition-all cursor-pointer ${
+            className={`group relative rounded-3xl border p-6 sm:p-8 min-h-[200px] sm:min-h-[240px] flex flex-col items-center justify-center text-center transition-all cursor-pointer transform-gpu ${
               isDark ? 'glass-pill-dark hover:border-[#e63946]' : 'glass-pill-light hover:border-black'
             } ${!revealed ? 'active:scale-98' : ''} ${
-              revealed && userChoice === 'A' ? (isCorrect ? 'ring-2 ring-[#00E664]' : 'ring-2 ring-[#e63946]') : ''
+              revealed && userChoice === 'A' ? (isCorrect !== false ? 'ring-2 ring-[#00E664]' : 'ring-2 ring-[#e63946]') : ''
             }`}
           >
             <div className="space-y-4 w-full">
@@ -98,7 +96,7 @@ export default function GameScreen({
               ) : (
                 <div className="animate-pop space-y-1">
                   <div className="text-2xl sm:text-3xl font-black text-[#00E664]">
-                    {question.displayA || question.yearA}
+                    {question.displayA || question.yearA || '✓'}
                   </div>
                 </div>
               )}
@@ -108,10 +106,10 @@ export default function GameScreen({
           {/* CARD B */}
           <div
             onClick={() => handleUserChoice('B')}
-            className={`group relative rounded-3xl border p-6 sm:p-8 min-h-[200px] sm:min-h-[240px] flex flex-col items-center justify-center text-center transition-all cursor-pointer ${
+            className={`group relative rounded-3xl border p-6 sm:p-8 min-h-[200px] sm:min-h-[240px] flex flex-col items-center justify-center text-center transition-all cursor-pointer transform-gpu ${
               isDark ? 'glass-pill-dark hover:border-[#e63946]' : 'glass-pill-light hover:border-black'
             } ${!revealed ? 'active:scale-98' : ''} ${
-              revealed && userChoice === 'B' ? (isCorrect ? 'ring-2 ring-[#00E664]' : 'ring-2 ring-[#e63946]') : ''
+              revealed && userChoice === 'B' ? (isCorrect !== false ? 'ring-2 ring-[#00E664]' : 'ring-2 ring-[#e63946]') : ''
             }`}
           >
             <div className="space-y-4 w-full">
@@ -126,7 +124,7 @@ export default function GameScreen({
               ) : (
                 <div className="animate-pop space-y-1">
                   <div className="text-2xl sm:text-3xl font-black text-[#00E664]">
-                    {question.displayB || question.yearB}
+                    {question.displayB || question.yearB || '✓'}
                   </div>
                 </div>
               )}
@@ -157,8 +155,8 @@ export default function GameScreen({
             <button
               onClick={() => handleUserChoice('OVER')}
               disabled={revealed}
-              className={`py-5 px-6 rounded-2xl bg-[#00E664] hover:bg-[#00c853] text-black font-black text-xl font-mono uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-95 shadow-lg ${
-                revealed && userChoice === 'OVER' ? (isCorrect ? 'ring-4 ring-white' : 'opacity-50 line-through') : ''
+              className={`py-5 px-6 rounded-2xl bg-[#00E664] hover:bg-[#00c853] text-black font-black text-xl font-mono uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-95 shadow-lg transform-gpu ${
+                revealed && userChoice === 'OVER' ? (isCorrect !== false ? 'ring-4 ring-white' : 'opacity-50 line-through') : ''
               }`}
             >
               <ArrowUp className="w-6 h-6 stroke-[3]" />
@@ -168,8 +166,8 @@ export default function GameScreen({
             <button
               onClick={() => handleUserChoice('UNDER')}
               disabled={revealed}
-              className={`py-5 px-6 rounded-2xl bg-[#e63946] hover:bg-[#d62828] text-white font-black text-xl font-mono uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-95 shadow-lg ${
-                revealed && userChoice === 'UNDER' ? (isCorrect ? 'ring-4 ring-white' : 'opacity-50 line-through') : ''
+              className={`py-5 px-6 rounded-2xl bg-[#e63946] hover:bg-[#d62828] text-white font-black text-xl font-mono uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-95 shadow-lg transform-gpu ${
+                revealed && userChoice === 'UNDER' ? (isCorrect !== false ? 'ring-4 ring-white' : 'opacity-50 line-through') : ''
               }`}
             >
               <ArrowDown className="w-6 h-6 stroke-[3]" />
