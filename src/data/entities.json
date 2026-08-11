@@ -1,0 +1,483 @@
+[
+  {
+    "id": "cristiano_ronaldo",
+    "name": "Cristiano Ronaldo",
+    "category": "Athletes",
+    "attributes": {
+      "instagramFollowers": 635000000,
+      "careerEarnings": 1900000000,
+      "age": 39,
+      "height": 187,
+      "careerGoals": 900,
+      "championships": 33,
+      "netWorth": 600000000
+    }
+  },
+  {
+    "id": "lionel_messi",
+    "name": "Lionel Messi",
+    "category": "Athletes",
+    "attributes": {
+      "instagramFollowers": 504000000,
+      "careerEarnings": 1600000000,
+      "age": 37,
+      "height": 170,
+      "careerGoals": 838,
+      "championships": 44,
+      "netWorth": 650000000
+    }
+  },
+  {
+    "id": "lebron_james",
+    "name": "LeBron James",
+    "category": "Athletes",
+    "attributes": {
+      "instagramFollowers": 160000000,
+      "careerEarnings": 1200000000,
+      "age": 39,
+      "height": 206,
+      "careerGoals": 40474,
+      "championships": 4,
+      "netWorth": 1000000000
+    }
+  },
+  {
+    "id": "stephen_curry",
+    "name": "Stephen Curry",
+    "category": "Athletes",
+    "attributes": {
+      "instagramFollowers": 57000000,
+      "careerEarnings": 470000000,
+      "age": 36,
+      "height": 188,
+      "careerGoals": 23668,
+      "championships": 4,
+      "netWorth": 160000000
+    }
+  },
+  {
+    "id": "kylian_mbappe",
+    "name": "Kylian Mbappé",
+    "category": "Athletes",
+    "attributes": {
+      "instagramFollowers": 120000000,
+      "careerEarnings": 300000000,
+      "age": 25,
+      "height": 178,
+      "careerGoals": 330,
+      "championships": 17,
+      "netWorth": 180000000
+    }
+  },
+  {
+    "id": "neymar_jr",
+    "name": "Neymar Jr",
+    "category": "Athletes",
+    "attributes": {
+      "instagramFollowers": 224000000,
+      "careerEarnings": 950000000,
+      "age": 32,
+      "height": 175,
+      "careerGoals": 439,
+      "championships": 31,
+      "netWorth": 250000000
+    }
+  },
+  {
+    "id": "mrbeast",
+    "name": "MrBeast",
+    "category": "YouTube",
+    "attributes": {
+      "youtubeSubscribers": 310000000,
+      "instagramFollowers": 60000000,
+      "netWorth": 700000000,
+      "age": 26
+    }
+  },
+  {
+    "id": "t_series",
+    "name": "T-Series",
+    "category": "YouTube",
+    "attributes": {
+      "youtubeSubscribers": 270000000,
+      "instagramFollowers": 15000000,
+      "netWorth": 500000000
+    }
+  },
+  {
+    "id": "pewdiepie",
+    "name": "PewDiePie",
+    "category": "YouTube",
+    "attributes": {
+      "youtubeSubscribers": 111000000,
+      "instagramFollowers": 21000000,
+      "netWorth": 40000000,
+      "age": 34
+    }
+  },
+  {
+    "id": "khaby_lame",
+    "name": "Khaby Lame",
+    "category": "Influencers",
+    "attributes": {
+      "instagramFollowers": 80000000,
+      "netWorth": 20000000,
+      "age": 24
+    }
+  },
+  {
+    "id": "charli_damelio",
+    "name": "Charli D'Amelio",
+    "category": "Influencers",
+    "attributes": {
+      "instagramFollowers": 45000000,
+      "netWorth": 30000000,
+      "age": 20
+    }
+  },
+  {
+    "id": "taylor_swift",
+    "name": "Taylor Swift",
+    "category": "Musicians",
+    "attributes": {
+      "spotifyListeners": 103000000,
+      "instagramFollowers": 283000000,
+      "youtubeSubscribers": 59000000,
+      "netWorth": 1300000000,
+      "age": 34
+    }
+  },
+  {
+    "id": "the_weeknd",
+    "name": "The Weeknd",
+    "category": "Musicians",
+    "attributes": {
+      "spotifyListeners": 108000000,
+      "instagramFollowers": 75000000,
+      "youtubeSubscribers": 35000000,
+      "netWorth": 300000000,
+      "age": 34
+    }
+  },
+  {
+    "id": "drake",
+    "name": "Drake",
+    "category": "Musicians",
+    "attributes": {
+      "spotifyListeners": 78000000,
+      "instagramFollowers": 145000000,
+      "youtubeSubscribers": 30000000,
+      "netWorth": 250000000,
+      "age": 37
+    }
+  },
+  {
+    "id": "billie_eilish",
+    "name": "Billie Eilish",
+    "category": "Musicians",
+    "attributes": {
+      "spotifyListeners": 105000000,
+      "instagramFollowers": 119000000,
+      "youtubeSubscribers": 50000000,
+      "netWorth": 50000000,
+      "age": 22
+    }
+  },
+  {
+    "id": "dua_lipa",
+    "name": "Dua Lipa",
+    "category": "Musicians",
+    "attributes": {
+      "spotifyListeners": 74000000,
+      "instagramFollowers": 88000000,
+      "youtubeSubscribers": 23000000,
+      "netWorth": 35000000,
+      "age": 28
+    }
+  },
+  {
+    "id": "eminem",
+    "name": "Eminem",
+    "category": "Musicians",
+    "attributes": {
+      "spotifyListeners": 66000000,
+      "instagramFollowers": 44000000,
+      "youtubeSubscribers": 61000000,
+      "netWorth": 250000000,
+      "age": 51
+    }
+  },
+  {
+    "id": "avatar_2009",
+    "name": "Avatar (2009)",
+    "category": "Movies",
+    "attributes": {
+      "boxOffice": 2923000000,
+      "movieBudget": 237000000,
+      "runtime": 162,
+      "foundedYear": 2009
+    }
+  },
+  {
+    "id": "avengers_endgame",
+    "name": "Avengers: Endgame",
+    "category": "Movies",
+    "attributes": {
+      "boxOffice": 2798000000,
+      "movieBudget": 356000000,
+      "runtime": 181,
+      "foundedYear": 2019
+    }
+  },
+  {
+    "id": "titanic_1997",
+    "name": "Titanic (1997)",
+    "category": "Movies",
+    "attributes": {
+      "boxOffice": 2264000000,
+      "movieBudget": 200000000,
+      "runtime": 194,
+      "foundedYear": 1997
+    }
+  },
+  {
+    "id": "barbie_2023",
+    "name": "Barbie (2023)",
+    "category": "Movies",
+    "attributes": {
+      "boxOffice": 1446000000,
+      "movieBudget": 145000000,
+      "runtime": 114,
+      "foundedYear": 2023
+    }
+  },
+  {
+    "id": "oppenheimer_2023",
+    "name": "Oppenheimer (2023)",
+    "category": "Movies",
+    "attributes": {
+      "boxOffice": 957000000,
+      "movieBudget": 100000000,
+      "runtime": 180,
+      "foundedYear": 2023
+    }
+  },
+  {
+    "id": "apple",
+    "name": "Apple",
+    "category": "Companies",
+    "attributes": {
+      "marketCap": 3450000000000,
+      "revenue": 383000000000,
+      "employees": 161000,
+      "foundedYear": 1976
+    }
+  },
+  {
+    "id": "microsoft",
+    "name": "Microsoft",
+    "category": "Companies",
+    "attributes": {
+      "marketCap": 3320000000000,
+      "revenue": 245000000000,
+      "employees": 221000,
+      "foundedYear": 1975
+    }
+  },
+  {
+    "id": "nvidia",
+    "name": "NVIDIA",
+    "category": "Companies",
+    "attributes": {
+      "marketCap": 3100000000000,
+      "revenue": 96000000000,
+      "employees": 29600,
+      "foundedYear": 1993
+    }
+  },
+  {
+    "id": "amazon",
+    "name": "Amazon",
+    "category": "Companies",
+    "attributes": {
+      "marketCap": 2050000000000,
+      "revenue": 575000000000,
+      "employees": 1525000,
+      "foundedYear": 1994
+    }
+  },
+  {
+    "id": "tesla",
+    "name": "Tesla",
+    "category": "Companies",
+    "attributes": {
+      "marketCap": 680000000000,
+      "revenue": 96000000000,
+      "employees": 140000,
+      "foundedYear": 2003
+    }
+  },
+  {
+    "id": "meta",
+    "name": "Meta (Facebook)",
+    "category": "Companies",
+    "attributes": {
+      "marketCap": 1300000000000,
+      "revenue": 134000000000,
+      "employees": 67300,
+      "foundedYear": 2004
+    }
+  },
+  {
+    "id": "tokyo_japan",
+    "name": "Tokyo, Japan",
+    "category": "Cities",
+    "attributes": {
+      "population": 37400000,
+      "landArea": 2194,
+      "foundedYear": 1457
+    }
+  },
+  {
+    "id": "new_york_city",
+    "name": "New York City, USA",
+    "category": "Cities",
+    "attributes": {
+      "population": 19500000,
+      "landArea": 783,
+      "foundedYear": 1624
+    }
+  },
+  {
+    "id": "london_uk",
+    "name": "London, UK",
+    "category": "Cities",
+    "attributes": {
+      "population": 9700000,
+      "landArea": 1572,
+      "foundedYear": 47
+    }
+  },
+  {
+    "id": "paris_france",
+    "name": "Paris, France",
+    "category": "Cities",
+    "attributes": {
+      "population": 13100000,
+      "landArea": 105,
+      "foundedYear": 259
+    }
+  },
+  {
+    "id": "india",
+    "name": "India",
+    "category": "Countries",
+    "attributes": {
+      "population": 1428000000,
+      "landArea": 3287263,
+      "gdp": 3900000000000
+    }
+  },
+  {
+    "id": "china",
+    "name": "China",
+    "category": "Countries",
+    "attributes": {
+      "population": 1409000000,
+      "landArea": 9596961,
+      "gdp": 18500000000000
+    }
+  },
+  {
+    "id": "usa",
+    "name": "United States",
+    "category": "Countries",
+    "attributes": {
+      "population": 335000000,
+      "landArea": 9833517,
+      "gdp": 28000000000000
+    }
+  },
+  {
+    "id": "burj_khalifa",
+    "name": "Burj Khalifa",
+    "category": "Buildings",
+    "attributes": {
+      "height": 828,
+      "foundedYear": 2010
+    }
+  },
+  {
+    "id": "empire_state_building",
+    "name": "Empire State Building",
+    "category": "Buildings",
+    "attributes": {
+      "height": 381,
+      "foundedYear": 1931
+    }
+  },
+  {
+    "id": "eiffel_tower",
+    "name": "Eiffel Tower",
+    "category": "Buildings",
+    "attributes": {
+      "height": 330,
+      "foundedYear": 1889
+    }
+  },
+  {
+    "id": "bugatti_chiron",
+    "name": "Bugatti Chiron",
+    "category": "Cars",
+    "attributes": {
+      "horsepower": 1479,
+      "topSpeed": 420,
+      "weight": 1995,
+      "netWorth": 3300000
+    }
+  },
+  {
+    "id": "ferrari_sf90",
+    "name": "Ferrari SF90 Stradale",
+    "category": "Cars",
+    "attributes": {
+      "horsepower": 986,
+      "topSpeed": 340,
+      "weight": 1570,
+      "netWorth": 524000
+    }
+  },
+  {
+    "id": "cheetah",
+    "name": "Cheetah",
+    "category": "Animals",
+    "attributes": {
+      "topSpeed": 120,
+      "weight": 72,
+      "height": 90,
+      "lifespan": 12
+    }
+  },
+  {
+    "id": "african_elephant",
+    "name": "African Elephant",
+    "category": "Animals",
+    "attributes": {
+      "topSpeed": 40,
+      "weight": 6000,
+      "height": 330,
+      "lifespan": 70
+    }
+  },
+  {
+    "id": "blue_whale",
+    "name": "Blue Whale",
+    "category": "Animals",
+    "attributes": {
+      "topSpeed": 50,
+      "weight": 150000,
+      "height": 3000,
+      "lifespan": 90
+    }
+  }
+]

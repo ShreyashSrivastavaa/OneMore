@@ -1,0 +1,255 @@
+{
+  "instagramFollowers": {
+    "name": "Instagram Followers",
+    "unit": "followers",
+    "type": "count",
+    "categories": ["Athletes", "Celebrities", "Musicians", "Influencers"],
+    "phrasings": [
+      "Who has MORE Instagram followers?",
+      "Which entity has the larger Instagram following?",
+      "Who has a bigger Instagram audience?"
+    ]
+  },
+  "youtubeSubscribers": {
+    "name": "YouTube Subscribers",
+    "unit": "subscribers",
+    "type": "count",
+    "categories": ["YouTube", "Influencers", "Musicians"],
+    "phrasings": [
+      "Who has MORE YouTube subscribers?",
+      "Which channel has a larger subscriber count?",
+      "Who commands a bigger YouTube audience?"
+    ]
+  },
+  "spotifyListeners": {
+    "name": "Spotify Monthly Listeners",
+    "unit": "monthly listeners",
+    "type": "count",
+    "categories": ["Musicians"],
+    "phrasings": [
+      "Who has MORE monthly listeners on Spotify?",
+      "Which artist reaches a larger monthly Spotify audience?",
+      "Who has a higher Spotify stream count?"
+    ]
+  },
+  "netWorth": {
+    "name": "Estimated Net Worth",
+    "unit": "net worth",
+    "type": "currency",
+    "categories": ["Athletes", "Celebrities", "Musicians", "Influencers", "Business"],
+    "phrasings": [
+      "Who has a HIGHER estimated net worth?",
+      "Which figure holds a larger fortune?",
+      "Who is wealthier?"
+    ]
+  },
+  "height": {
+    "name": "Height",
+    "unit": "cm",
+    "type": "length",
+    "categories": ["Athletes", "Celebrities", "Animals", "Buildings"],
+    "phrasings": [
+      "Which is TALLER?",
+      "Who has the greater height?",
+      "Which entity reaches a higher peak?"
+    ]
+  },
+  "age": {
+    "name": "Age",
+    "unit": "years old",
+    "type": "count",
+    "categories": ["Athletes", "Celebrities", "Musicians", "Influencers"],
+    "phrasings": [
+      "Who is OLDER?",
+      "Which person was born earlier?",
+      "Who has lived longer?"
+    ]
+  },
+  "careerEarnings": {
+    "name": "Career Earnings",
+    "unit": "career earnings",
+    "type": "currency",
+    "categories": ["Athletes", "Celebrities", "Musicians"],
+    "phrasings": [
+      "Who has earned MORE total income across their career?",
+      "Which athlete or star generated higher career earnings?",
+      "Who has accumulated more career wealth?"
+    ]
+  },
+  "careerGoals": {
+    "name": "Career Goals / Points",
+    "unit": "career goals",
+    "type": "count",
+    "categories": ["Athletes"],
+    "phrasings": [
+      "Who has scored MORE total career goals / points?",
+      "Which sports legend has a higher goal tally?",
+      "Who leads in career scoring?"
+    ]
+  },
+  "championships": {
+    "name": "Titles / Championships",
+    "unit": "championships",
+    "type": "count",
+    "categories": ["Athletes"],
+    "phrasings": [
+      "Who has won MORE career championships / titles?",
+      "Which athlete holds more major championship trophies?",
+      "Who has a higher trophy count?"
+    ]
+  },
+  "population": {
+    "name": "Population",
+    "unit": "people",
+    "type": "count",
+    "categories": ["Countries", "Cities"],
+    "phrasings": [
+      "Which has a LARGER population?",
+      "Which area has more total residents?",
+      "Which holds a bigger human population?"
+    ]
+  },
+  "landArea": {
+    "name": "Land Area",
+    "unit": "km²",
+    "type": "area",
+    "categories": ["Countries", "Cities"],
+    "phrasings": [
+      "Which has a LARGER land area?",
+      "Which territory covers more square kilometers?",
+      "Which is geographically bigger?"
+    ]
+  },
+  "gdp": {
+    "name": "Nominal GDP",
+    "unit": "GDP",
+    "type": "currency",
+    "categories": ["Countries"],
+    "phrasings": [
+      "Which nation has a HIGHER nominal GDP?",
+      "Which country has a larger total economic output?",
+      "Which economy generates more GDP?"
+    ]
+  },
+  "marketCap": {
+    "name": "Market Valuation",
+    "unit": "market cap",
+    "type": "currency",
+    "categories": ["Companies", "Social Apps"],
+    "phrasings": [
+      "Which company has a HIGHER market valuation?",
+      "Which corporate giant is worth more?",
+      "Which entity holds a larger market cap?"
+    ]
+  },
+  "revenue": {
+    "name": "Annual Revenue",
+    "unit": "annual revenue",
+    "type": "currency",
+    "categories": ["Companies", "Social Apps"],
+    "phrasings": [
+      "Which company generates MORE annual revenue?",
+      "Which business brings in higher revenue?",
+      "Which enterprise has greater top-line sales?"
+    ]
+  },
+  "employees": {
+    "name": "Global Employees",
+    "unit": "employees",
+    "type": "count",
+    "categories": ["Companies"],
+    "phrasings": [
+      "Which company employs MORE people worldwide?",
+      "Which business has a larger total workforce?",
+      "Who has more staff members?"
+    ]
+  },
+  "boxOffice": {
+    "name": "Global Box Office",
+    "unit": "box office",
+    "type": "currency",
+    "categories": ["Movies"],
+    "phrasings": [
+      "Which movie generated MORE global box office revenue?",
+      "Which film was a bigger theatrical hit worldwide?",
+      "Which film grossed more cash globally?"
+    ]
+  },
+  "movieBudget": {
+    "name": "Production Budget",
+    "unit": "budget",
+    "type": "currency",
+    "categories": ["Movies"],
+    "phrasings": [
+      "Which movie had a LARGER production budget?",
+      "Which film cost more money to make?",
+      "Which movie had higher production spending?"
+    ]
+  },
+  "runtime": {
+    "name": "Runtime",
+    "unit": "minutes",
+    "type": "count",
+    "categories": ["Movies"],
+    "phrasings": [
+      "Which movie has a LONGER runtime?",
+      "Which film lasts more total minutes?",
+      "Which feature film is longer?"
+    ]
+  },
+  "foundedYear": {
+    "name": "Founded / Released / Built Year",
+    "unit": "year",
+    "type": "year",
+    "categories": ["Companies", "Social Apps", "Movies", "Buildings", "Gaming"],
+    "phrasings": [
+      "Which was founded or released EARLIER?",
+      "Which came first in history?",
+      "Which is older?"
+    ]
+  },
+  "horsepower": {
+    "name": "Horsepower",
+    "unit": "hp",
+    "type": "count",
+    "categories": ["Cars"],
+    "phrasings": [
+      "Which car has MORE horsepower?",
+      "Which vehicle packs a more powerful engine?",
+      "Which car produces higher horsepower?"
+    ]
+  },
+  "topSpeed": {
+    "name": "Top Speed",
+    "unit": "km/h",
+    "type": "speed",
+    "categories": ["Cars", "Animals"],
+    "phrasings": [
+      "Which achieves a HIGHER top speed?",
+      "Which is faster?",
+      "Which moves at greater velocity?"
+    ]
+  },
+  "weight": {
+    "name": "Weight",
+    "unit": "kg",
+    "type": "weight",
+    "categories": ["Animals", "Cars"],
+    "phrasings": [
+      "Which is HEAVIER?",
+      "Which entity has greater mass?",
+      "Which weighs more?"
+    ]
+  },
+  "lifespan": {
+    "name": "Average Lifespan",
+    "unit": "years",
+    "type": "count",
+    "categories": ["Animals"],
+    "phrasings": [
+      "Which animal has a LONGER average lifespan?",
+      "Which creature lives more total years on average?",
+      "Which has a higher life expectancy?"
+    ]
+  }
+}

@@ -14,6 +14,8 @@ const SCREEN = {
   RESULT_WRONG: 'RESULT_WRONG',
 };
 
+import { generateDynamicQuestion } from './utils/questionEngine';
+
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState(SCREEN.START);
   const [currentStreak, setCurrentStreak] = useState(0);
@@ -43,30 +45,8 @@ export default function App() {
     setStats(getGameStats());
   }, []);
 
-  const getNextQuestion = (streak, usedIds) => {
-    let targetDifficulty = 'Easy';
-    if (streak >= 12) {
-      targetDifficulty = 'Hard';
-    } else if (streak >= 5) {
-      targetDifficulty = 'Medium';
-    }
-
-    let available = questionsData.filter(
-      (q) => q.difficulty === targetDifficulty && !usedIds.has(q.id)
-    );
-
-    if (available.length === 0) {
-      available = questionsData.filter((q) => !usedIds.has(q.id));
-    }
-
-    if (available.length === 0) {
-      available = questionsData;
-    }
-
-    const randomIndex = Math.floor(Math.random() * available.length);
-    const rawQuestion = available[randomIndex];
-
-    return generateRoundData(rawQuestion, streak);
+  const getNextQuestion = (streak) => {
+    return generateDynamicQuestion(streak);
   };
 
   // Immediate Background Preloading for Current & Next Questions
