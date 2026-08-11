@@ -3,10 +3,13 @@ import Header from './components/Header';
 import StartScreen from './components/StartScreen';
 import GameScreen from './components/GameScreen';
 import ResultWrongScreen from './components/ResultWrongScreen';
-import questionsData from './data/questions.json';
+import LeaderboardModal from './components/LeaderboardModal';
+import AuthModal from './components/AuthModal';
 import { getBestStreak, saveBestStreak, getGameStats, updateGameStats } from './utils/storage';
-import { generateRoundData } from './utils/formatters';
+import { generateDynamicQuestion } from './utils/questionEngine';
 import { preloadQuestionImages } from './utils/images';
+import { api } from './api/client';
+import { setPlayerName } from './utils/leaderboard';
 
 const SCREEN = {
   START: 'START',
@@ -14,21 +17,17 @@ const SCREEN = {
   RESULT_WRONG: 'RESULT_WRONG',
 };
 
-import { generateDynamicQuestion } from './utils/questionEngine';
-
-import LeaderboardModal from './components/LeaderboardModal';
-import AuthModal from './components/AuthModal';
-
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState(SCREEN.START);
   const [currentStreak, setCurrentStreak] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
   const [stats, setStats] = useState({ totalGames: 0, totalCorrect: 0 });
   const [currentQuestion, setCurrentQuestion] = useState(null);
-  const [usedQuestionIds, setUsedQuestionIds] = useState(new Set());
+  const [sessionId, setSessionId] = useState(null);
   const [isNewBest, setIsNewBest] = useState(false);
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const [theme, setTheme] = useState(() => {
     try {
       return localStorage.getItem('onemore_theme') || 'dark';
@@ -45,47 +44,97 @@ export default function App() {
     } catch (e) {}
   };
 
+  // Restore authenticated session from backend or URL params on startup
   useEffect(() => {
     setBestStreak(getBestStreak());
     setStats(getGameStats());
-  }, []);
 
-  const getNextQuestion = (streak) => {
-    return generateDynamicQuestion(streak);
-  };
-
-  // Immediate Background Preloading for Current & Next Questions
-  useEffect(() => {
-    if (currentQuestion && currentScreen === SCREEN.GAME) {
-      // 1. High priority preload for current question
-      preloadQuestionImages(currentQuestion);
-
-      // 2. Preload NEXT question images immediately in the background
+    const checkAuth = async () => {
       try {
-        const nextQ = getNextQuestion(currentStreak + 1, usedQuestionIds);
-        if (nextQ) {
-          preloadQuestionImages(nextQ);
+        const data = await api.getMe();
+        if (data && data.user) {
+          setUser(data.user);
+          setPlayerName(data.user.name);
+          if (data.user.bestStreak > getBestStreak()) {
+            setBestStreak(data.user.bestStreak);
+            saveBestStreak(data.user.bestStreak);
+          }
         }
       } catch (e) {}
-    }
-  }, [currentQuestion, currentStreak, currentScreen, usedQuestionIds]);
+    };
 
-  const handleStartGame = () => {
+    checkAuth();
+
+    // Check OAuth URL redirects
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('auth_success') === 'true') {
+      checkAuth();
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
+
+  const handleStartGame = async () => {
     setCurrentStreak(0);
     setIsNewBest(false);
-    const newUsedIds = new Set();
-    const q = getNextQuestion(0);
-    newUsedIds.add(q.id);
 
-    setUsedQuestionIds(newUsedIds);
-    setCurrentQuestion(q);
+    try {
+      // Try backend server-authoritative session
+      const serverGame = await api.startGame();
+      if (serverGame && serverGame.sessionId && serverGame.question) {
+        setSessionId(serverGame.sessionId);
+        setCurrentQuestion(serverGame.question);
+        setCurrentScreen(SCREEN.GAME);
+        preloadQuestionImages(serverGame.question);
+        return;
+      }
+    } catch (e) {}
+
+    // Dynamic local fallback if server is offline in dev
+    const localQ = generateDynamicQuestion(0);
+    setCurrentQuestion(localQ);
     setCurrentScreen(SCREEN.GAME);
-
-    // Preload first round images immediately
-    preloadQuestionImages(q);
+    preloadQuestionImages(localQ);
   };
 
-  const handleGuess = (isCorrect) => {
+  const handleGuess = async (choice) => {
+    // Attempt server-authoritative answer evaluation
+    if (sessionId && currentQuestion) {
+      try {
+        const res = await api.submitAnswer(sessionId, currentQuestion.id, choice);
+        updateGameStats(res.correct);
+        setStats(getGameStats());
+
+        if (res.correct) {
+          const nextStreak = res.streak;
+          setCurrentStreak(nextStreak);
+
+          if (res.isNewBest || nextStreak > bestStreak) {
+            setBestStreak(nextStreak);
+            saveBestStreak(nextStreak);
+            setIsNewBest(true);
+          }
+
+          if (res.nextQuestion) {
+            setCurrentQuestion(res.nextQuestion);
+            preloadQuestionImages(res.nextQuestion);
+          }
+        } else {
+          setCurrentScreen(SCREEN.RESULT_WRONG);
+        }
+        return;
+      } catch (e) {}
+    }
+
+    // Local evaluation fallback
+    let isCorrect = false;
+    if (currentQuestion.formatType === 'PICK_WINNER') {
+      isCorrect = (choice === 'A' && currentQuestion.aIsBigger) || (choice === 'B' && !currentQuestion.aIsBigger);
+    } else if (currentQuestion.formatType === 'TIMELINE') {
+      isCorrect = (choice === 'A' && currentQuestion.aIsEarlier) || (choice === 'B' && !currentQuestion.aIsEarlier);
+    } else if (currentQuestion.formatType === 'OVER_UNDER') {
+      isCorrect = (choice === 'OVER' && currentQuestion.isOver) || (choice === 'UNDER' && !currentQuestion.isOver);
+    }
+
     updateGameStats(isCorrect);
     setStats(getGameStats());
 
@@ -99,11 +148,7 @@ export default function App() {
         setIsNewBest(true);
       }
 
-      const q = getNextQuestion(nextStreak);
-      const newUsedIds = new Set(usedQuestionIds);
-      newUsedIds.add(q.id);
-
-      setUsedQuestionIds(newUsedIds);
+      const q = generateDynamicQuestion(nextStreak);
       setCurrentQuestion(q);
       setCurrentScreen(SCREEN.GAME);
     } else {
@@ -143,7 +188,7 @@ export default function App() {
 
         {currentScreen === SCREEN.GAME && currentQuestion && (
           <GameScreen
-            key={currentQuestion.id}
+            key={currentQuestion.id || 'current_q'}
             question={currentQuestion}
             currentStreak={currentStreak}
             theme={theme}
@@ -179,6 +224,13 @@ export default function App() {
         <AuthModal
           theme={theme}
           onClose={() => setIsAuthOpen(false)}
+          onSignedIn={(name) => {
+            if (name) {
+              setUser({ name });
+            } else {
+              setUser(null);
+            }
+          }}
         />
       )}
 
