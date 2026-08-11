@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play, Flame, Trophy, ArrowRight, Zap } from 'lucide-react';
+import { Play, Trophy, ArrowRight } from 'lucide-react';
 import { playTapSound } from '../utils/audio';
 
 export default function StartScreen({ bestStreak, stats, theme = 'dark', onStart, onOpenLeaderboard, onOpenAuth }) {
@@ -21,13 +21,16 @@ export default function StartScreen({ bestStreak, stats, theme = 'dark', onStart
       {/* Hero Entrance Section */}
       <div className="relative z-10 my-auto flex flex-col items-center max-w-xl w-full space-y-5 sm:space-y-6 animate-pop px-2">
         
-        {/* Custom Logo Image Badge */}
+        {/* Clean Hero Logo Banner Emblem (Zero Black Padding/Borders) */}
         <div className="flex items-center justify-center">
-          <img
-            src="/PLAYSTILLALIVE.png"
-            alt="PLAY STILL ALIVE Logo"
-            className="w-20 h-20 sm:w-24 sm:h-24 object-contain rounded-3xl border-2 border-white/20 shadow-2xl animate-pop"
-          />
+          <div className="relative group p-1">
+            <div className="absolute -inset-2 bg-gradient-to-r from-[#e63946] via-amber-500 to-[#00E664] rounded-3xl blur-xl opacity-40 group-hover:opacity-70 transition-all" />
+            <img
+              src="/PLAYSTILLALIVE.png"
+              alt="PLAY STILL ALIVE Logo"
+              className="relative max-w-[260px] sm:max-w-[320px] h-auto object-cover rounded-2xl shadow-2xl animate-pop border border-white/20"
+            />
+          </div>
         </div>
 
         {/* Available Live Badge */}
@@ -36,18 +39,6 @@ export default function StartScreen({ bestStreak, stats, theme = 'dark', onStart
         }`}>
           <span className="w-2 h-2 rounded-full bg-[#e63946] shadow-[0_0_8px_#e63946] animate-pulse" />
           <span>HOW LONG CAN YOU STAY ALIVE?</span>
-        </div>
-
-        {/* Hero Title with Outlined Typography */}
-        <div className="space-y-1">
-          <h1 className="text-5xl sm:text-7xl md:text-8xl font-black tracking-tight leading-none uppercase font-sans">
-            <span className={isDark ? 'text-[#f4e4d0]' : 'text-slate-900'}>PLAY </span>
-            <span className={isDark ? 'text-stroke-sand' : 'text-stroke-dark'}>STILL </span>
-            <span className="text-[#e63946]">ALIVE</span>
-          </h1>
-          <p className="text-sm sm:text-base text-slate-400 font-mono max-w-md mx-auto pt-2">
-            Every correct answer keeps your streak alive. One mistake ends your run.
-          </p>
         </div>
 
         {/* Portfolio-inspired Stat Strip */}
