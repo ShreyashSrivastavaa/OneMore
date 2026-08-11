@@ -8,11 +8,9 @@ export const ROUND_FORMATS = {
   TIMELINE: 'TIMELINE',
 };
 
-// Session history memory to prevent repeats
 const recentPairKeys = new Set();
 let lastEntityId = null;
 
-// Format numbers into human-friendly strings ($3.4 Trillion, 635 Million, 8,849 m)
 export const formatAttributeValue = (val, type, unit) => {
   if (val === undefined || val === null) return 'N/A';
 
@@ -49,32 +47,28 @@ export const formatAttributeValue = (val, type, unit) => {
   return val.toLocaleString();
 };
 
-// Determine difficulty tier based on streak
 const getTargetDifficultyTier = (streak) => {
   if (streak >= 15) return 'Hard';
   if (streak >= 6) return 'Medium';
   return 'Easy';
 };
 
-// Main Dynamic Question Generator
 export const generateDynamicQuestion = (streak = 0) => {
   const targetTier = getTargetDifficultyTier(streak);
   const roundFormatIndex = streak % 3;
+  const defaultAsOf = 'August 2026';
 
-  // Try dynamic relational engine first
   const attributeKeys = Object.keys(attributesData);
   const shuffledAttributes = [...attributeKeys].sort(() => Math.random() - 0.5);
 
   for (const attrKey of shuffledAttributes) {
     const attrMeta = attributesData[attrKey];
     
-    // Find all entities with valid non-null numerical values for this attribute
     const eligibleEntities = entitiesData.filter(
       (e) => e.attributes && e.attributes[attrKey] !== undefined && e.attributes[attrKey] !== null
     );
 
     if (eligibleEntities.length >= 2) {
-      // Pick Entity A and Entity B
       const shuffledEntities = [...eligibleEntities].sort(() => Math.random() - 0.5);
       
       for (let i = 0; i < shuffledEntities.length - 1; i++) {
@@ -82,7 +76,6 @@ export const generateDynamicQuestion = (streak = 0) => {
           const entityA = shuffledEntities[i];
           const entityB = shuffledEntities[j];
 
-          // Avoid showing same entity in consecutive rounds
           if (entityA.id === lastEntityId || entityB.id === lastEntityId) continue;
 
           const pairKey = `${entityA.id}-${entityB.id}-${attrKey}`;
@@ -98,11 +91,9 @@ export const generateDynamicQuestion = (streak = 0) => {
           if (ratio >= 0.82) pairDifficulty = 'Hard';
           else if (ratio >= 0.6) pairDifficulty = 'Medium';
 
-          // Match streak difficulty tier requirement when possible
           if (targetTier === 'Hard' && pairDifficulty === 'Easy') continue;
           if (targetTier === 'Easy' && pairDifficulty === 'Hard') continue;
 
-          // Track session memory
           recentPairKeys.add(pairKey);
           if (recentPairKeys.size > 20) {
             const first = recentPairKeys.values().next().value;
@@ -110,7 +101,6 @@ export const generateDynamicQuestion = (streak = 0) => {
           }
           lastEntityId = entityA.id;
 
-          // Determine format type
           let formatType = ROUND_FORMATS.PICK_WINNER;
           if (roundFormatIndex === 1) {
             formatType = ROUND_FORMATS.OVER_UNDER;
@@ -120,8 +110,6 @@ export const generateDynamicQuestion = (streak = 0) => {
 
           const displayA = formatAttributeValue(valA, attrMeta.type, attrMeta.unit);
           const displayB = formatAttributeValue(valB, attrMeta.type, attrMeta.unit);
-
-          // Build phrasing
           const phrasing = attrMeta.phrasings[Math.floor(Math.random() * attrMeta.phrasings.length)];
 
           if (formatType === ROUND_FORMATS.OVER_UNDER) {
@@ -141,6 +129,7 @@ export const generateDynamicQuestion = (streak = 0) => {
               targetValue: targetVal,
               targetDisplay,
               isOver,
+              dataAsOf: defaultAsOf,
               prompt: `Does ${entityA.name} have OVER or UNDER ${targetDisplay} ${attrMeta.name.toLowerCase()}?`,
             };
           }
@@ -158,11 +147,11 @@ export const generateDynamicQuestion = (streak = 0) => {
               displayA: valA.toString(),
               displayB: valB.toString(),
               aIsEarlier,
+              dataAsOf: defaultAsOf,
               prompt: `Which was founded or released EARLIER?`,
             };
           }
 
-          // PICK_WINNER
           const aIsBigger = valA >= valB;
           return {
             id: `${entityA.id}_vs_${entityB.id}_${Date.now()}`,
@@ -176,6 +165,7 @@ export const generateDynamicQuestion = (streak = 0) => {
             displayA,
             displayB,
             aIsBigger,
+            dataAsOf: defaultAsOf,
             prompt: phrasing,
           };
         }
@@ -183,7 +173,6 @@ export const generateDynamicQuestion = (streak = 0) => {
     }
   }
 
-  // Fallback to questions.json if relational lookup is exhausted
   const randomIndex = Math.floor(Math.random() * questionsData.length);
   const rawFallback = questionsData[randomIndex];
   const swap = Math.random() < 0.5;
@@ -200,6 +189,7 @@ export const generateDynamicQuestion = (streak = 0) => {
     displayA: swap ? rawFallback.displayB : rawFallback.displayA,
     displayB: swap ? rawFallback.displayA : rawFallback.displayB,
     aIsBigger: (swap ? rawFallback.valueB : rawFallback.valueA) >= (swap ? rawFallback.valueA : rawFallback.valueB),
+    dataAsOf: 'August 2026',
     prompt: `Which has MORE ${rawFallback.metric.toLowerCase()}?`,
   };
 };

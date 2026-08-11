@@ -62,8 +62,9 @@ export default function GameScreen({
         <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-mono tracking-wider uppercase ${
           isDark ? 'glass-pill-dark text-slate-300' : 'glass-pill-light text-slate-700'
         }`}>
-          <span>{categoryTheme.icon}</span>
           <span>{question.category} • {question.formatType.replace('_', ' ')}</span>
+          <span className="opacity-40">•</span>
+          <span className="text-[10px] text-[#e63946] font-bold">AS OF {question.dataAsOf || 'AUG 2026'}</span>
         </div>
 
         <h2 className={`text-2xl sm:text-4xl font-extrabold tracking-tight leading-tight font-sans ${

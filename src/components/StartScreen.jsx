@@ -2,7 +2,7 @@ import React from 'react';
 import { Play, Flame, Trophy, ArrowRight, Zap } from 'lucide-react';
 import { playTapSound } from '../utils/audio';
 
-export default function StartScreen({ bestStreak, stats, theme = 'dark', onStart }) {
+export default function StartScreen({ bestStreak, stats, theme = 'dark', onStart, onOpenLeaderboard, onOpenAuth }) {
   const handleStart = () => {
     playTapSound();
     onStart();
@@ -19,7 +19,7 @@ export default function StartScreen({ bestStreak, stats, theme = 'dark', onStart
       <div className="h-16 sm:h-20" />
 
       {/* Hero Entrance Section */}
-      <div className="relative z-10 my-auto flex flex-col items-center max-w-xl w-full space-y-6 sm:space-y-8 animate-pop px-2">
+      <div className="relative z-10 my-auto flex flex-col items-center max-w-xl w-full space-y-5 sm:space-y-6 animate-pop px-2">
         
         {/* Available Live Badge */}
         <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-mono tracking-wider uppercase ${
@@ -68,14 +68,29 @@ export default function StartScreen({ bestStreak, stats, theme = 'dark', onStart
           </div>
         </div>
 
-        {/* Pill Play Button */}
-        <button
-          onClick={handleStart}
-          className="w-full max-w-md py-4 sm:py-5 px-8 rounded-full btn-portfolio-red font-extrabold text-xl sm:text-2xl tracking-wider uppercase flex items-center justify-center gap-3 cursor-pointer group"
-        >
-          <Play className="w-6 h-6 sm:w-7 sm:h-7 fill-white" />
-          <span>START RUN →</span>
-        </button>
+        {/* Action Buttons: Play + Leaderboard */}
+        <div className="w-full max-w-md space-y-3">
+          <button
+            onClick={handleStart}
+            className="w-full py-4 sm:py-5 px-8 rounded-full btn-portfolio-red font-extrabold text-xl sm:text-2xl tracking-wider uppercase flex items-center justify-center gap-3 cursor-pointer group"
+          >
+            <Play className="w-6 h-6 sm:w-7 sm:h-7 fill-white" />
+            <span>START RUN →</span>
+          </button>
+
+          <button
+            onClick={() => {
+              playTapSound();
+              if (onOpenLeaderboard) onOpenLeaderboard();
+            }}
+            className={`w-full py-3.5 px-6 rounded-full font-mono text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 border transition-all cursor-pointer ${
+              isDark ? 'glass-pill-dark text-slate-200 hover:border-[#e63946]' : 'glass-pill-light text-slate-800'
+            }`}
+          >
+            <Trophy className="w-4 h-4 text-[#e63946]" />
+            <span>VIEW GLOBAL LEADERBOARD</span>
+          </button>
+        </div>
 
       </div>
 

@@ -16,6 +16,9 @@ const SCREEN = {
 
 import { generateDynamicQuestion } from './utils/questionEngine';
 
+import LeaderboardModal from './components/LeaderboardModal';
+import AuthModal from './components/AuthModal';
+
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState(SCREEN.START);
   const [currentStreak, setCurrentStreak] = useState(0);
@@ -24,6 +27,8 @@ export default function App() {
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [usedQuestionIds, setUsedQuestionIds] = useState(new Set());
   const [isNewBest, setIsNewBest] = useState(false);
+  const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [theme, setTheme] = useState(() => {
     try {
       return localStorage.getItem('onemore_theme') || 'dark';
@@ -69,7 +74,7 @@ export default function App() {
     setCurrentStreak(0);
     setIsNewBest(false);
     const newUsedIds = new Set();
-    const q = getNextQuestion(0, newUsedIds);
+    const q = getNextQuestion(0);
     newUsedIds.add(q.id);
 
     setUsedQuestionIds(newUsedIds);
@@ -94,7 +99,7 @@ export default function App() {
         setIsNewBest(true);
       }
 
-      const q = getNextQuestion(nextStreak, usedQuestionIds);
+      const q = getNextQuestion(nextStreak);
       const newUsedIds = new Set(usedQuestionIds);
       newUsedIds.add(q.id);
 
@@ -113,13 +118,15 @@ export default function App() {
 
   return (
     <div className={`min-h-screen flex flex-col justify-between transition-colors duration-200 ${
-      theme === 'dark' ? 'bg-[#0c0d0e] text-[#F5F3E9]' : 'bg-[#FAF8F5] text-[#0c0d0e]'
+      theme === 'dark' ? 'bg-[#050508] text-[#f4e4d0]' : 'bg-[#FAF8F5] text-[#0c0d0e]'
     }`}>
       <Header
         currentStreak={currentStreak}
         bestStreak={bestStreak}
         theme={theme}
         onToggleTheme={handleToggleTheme}
+        onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
+        onOpenAuth={() => setIsAuthOpen(true)}
       />
 
       <main className="flex-1 flex flex-col justify-center">
@@ -129,6 +136,8 @@ export default function App() {
             stats={stats}
             theme={theme}
             onStart={handleStartGame}
+            onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
+            onOpenAuth={() => setIsAuthOpen(true)}
           />
         )}
 
@@ -150,9 +159,28 @@ export default function App() {
             isNewBest={isNewBest}
             theme={theme}
             onPlayAgain={handleStartGame}
+            onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
+            onOpenAuth={() => setIsAuthOpen(true)}
           />
         )}
       </main>
+
+      {/* Global Leaderboard Modal */}
+      {isLeaderboardOpen && (
+        <LeaderboardModal
+          theme={theme}
+          currentStreak={bestStreak}
+          onClose={() => setIsLeaderboardOpen(false)}
+        />
+      )}
+
+      {/* Player Sign-In Modal */}
+      {isAuthOpen && (
+        <AuthModal
+          theme={theme}
+          onClose={() => setIsAuthOpen(false)}
+        />
+      )}
 
       <footer className={`py-2 text-center text-[11px] font-mono uppercase tracking-wider ${
         theme === 'dark' ? 'text-slate-600' : 'text-slate-400'
