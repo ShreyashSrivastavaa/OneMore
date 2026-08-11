@@ -104,24 +104,27 @@ export default function App() {
         updateGameStats(res.correct);
         setStats(getGameStats());
 
-        if (res.correct) {
-          const nextStreak = res.streak;
-          setCurrentStreak(nextStreak);
+        setTimeout(() => {
+          if (res.correct) {
+            const nextStreak = res.streak;
+            setCurrentStreak(nextStreak);
 
-          if (res.isNewBest || nextStreak > bestStreak) {
-            setBestStreak(nextStreak);
-            saveBestStreak(nextStreak);
-            setIsNewBest(true);
-          }
+            if (res.isNewBest || nextStreak > bestStreak) {
+              setBestStreak(nextStreak);
+              saveBestStreak(nextStreak);
+              setIsNewBest(true);
+            }
 
-          if (res.nextQuestion) {
-            setCurrentQuestion(res.nextQuestion);
-            preloadQuestionImages(res.nextQuestion);
+            if (res.nextQuestion) {
+              setCurrentQuestion(res.nextQuestion);
+              preloadQuestionImages(res.nextQuestion);
+            }
+          } else {
+            setCurrentScreen(SCREEN.RESULT_WRONG);
           }
-        } else {
-          setCurrentScreen(SCREEN.RESULT_WRONG);
-        }
-        return;
+        }, 500);
+
+        return res;
       } catch (e) {}
     }
 
@@ -138,27 +141,31 @@ export default function App() {
     updateGameStats(isCorrect);
     setStats(getGameStats());
 
-    if (isCorrect) {
-      const nextStreak = currentStreak + 1;
-      setCurrentStreak(nextStreak);
+    setTimeout(() => {
+      if (isCorrect) {
+        const nextStreak = currentStreak + 1;
+        setCurrentStreak(nextStreak);
 
-      const recordBroken = saveBestStreak(nextStreak);
-      if (recordBroken) {
-        setBestStreak(nextStreak);
-        setIsNewBest(true);
-      }
+        const recordBroken = saveBestStreak(nextStreak);
+        if (recordBroken) {
+          setBestStreak(nextStreak);
+          setIsNewBest(true);
+        }
 
-      const q = generateDynamicQuestion(nextStreak);
-      setCurrentQuestion(q);
-      setCurrentScreen(SCREEN.GAME);
-    } else {
-      const recordBroken = saveBestStreak(currentStreak);
-      if (recordBroken) {
-        setBestStreak(currentStreak);
-        setIsNewBest(true);
+        const q = generateDynamicQuestion(nextStreak);
+        setCurrentQuestion(q);
+        setCurrentScreen(SCREEN.GAME);
+      } else {
+        const recordBroken = saveBestStreak(currentStreak);
+        if (recordBroken) {
+          setBestStreak(currentStreak);
+          setIsNewBest(true);
+        }
+        setCurrentScreen(SCREEN.RESULT_WRONG);
       }
-      setCurrentScreen(SCREEN.RESULT_WRONG);
-    }
+    }, 500);
+
+    return { correct: isCorrect };
   };
 
   return (

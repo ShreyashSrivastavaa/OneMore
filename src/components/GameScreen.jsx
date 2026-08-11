@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowUp, ArrowDown, Check, X, Flame } from 'lucide-react';
 import { playTapSound, playCorrectSound, playWrongSound } from '../utils/audio';
 import { ROUND_FORMATS } from '../utils/formatters';
@@ -17,34 +17,31 @@ export default function GameScreen({
   const categoryTheme = getCategoryTheme(question.category);
   const isDark = theme === 'dark';
 
-  const handleUserChoice = (choice) => {
+  // Reset local reveal state when new question arrives
+  useEffect(() => {
+    setRevealed(false);
+    setUserChoice(null);
+    setIsCorrect(null);
+  }, [question?.id]);
+
+  const handleUserChoice = async (choice) => {
     if (revealed) return;
 
     playTapSound();
     setUserChoice(choice);
-    setRevealed(true);
 
-    let userIsRight = false;
+    // Call App.jsx onGuess which validates via server or local engine
+    const result = await onGuess(choice);
 
-    if (question.formatType === ROUND_FORMATS.PICK_WINNER) {
-      userIsRight = (choice === 'A' && question.aIsBigger) || (choice === 'B' && !question.aIsBigger);
-    } else if (question.formatType === ROUND_FORMATS.TIMELINE) {
-      userIsRight = (choice === 'A' && question.aIsEarlier) || (choice === 'B' && !question.aIsEarlier);
-    } else if (question.formatType === ROUND_FORMATS.OVER_UNDER) {
-      userIsRight = (choice === 'OVER' && question.isOver) || (choice === 'UNDER' && !question.isOver);
-    }
-
+    const userIsRight = typeof result === 'boolean' ? result : result?.correct;
     setIsCorrect(userIsRight);
+    setRevealed(true);
 
     if (userIsRight) {
       playCorrectSound();
     } else {
       playWrongSound();
     }
-
-    setTimeout(() => {
-      onGuess(userIsRight);
-    }, 600);
   };
 
   return (
@@ -62,7 +59,7 @@ export default function GameScreen({
         <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-mono tracking-wider uppercase ${
           isDark ? 'glass-pill-dark text-slate-300' : 'glass-pill-light text-slate-700'
         }`}>
-          <span>{question.category} • {question.formatType.replace('_', ' ')}</span>
+          <span>{question.category} • {question.formatType ? question.formatType.replace('_', ' ') : 'QUESTION'}</span>
           <span className="opacity-40">•</span>
           <span className="text-[10px] text-[#e63946] font-bold">AS OF {question.dataAsOf || 'AUG 2026'}</span>
         </div>
@@ -77,7 +74,7 @@ export default function GameScreen({
       {/* RENDER LAYOUT BASED ON ROUND FORMAT */}
 
       {/* FORMAT 1 & 3: PICK WINNER OR TIMELINE (2-OPTION BATTLE) */}
-      {(question.formatType === ROUND_FORMATS.PICK_WINNER || question.formatType === ROUND_FORMATS.TIMELINE) && (
+      {(question.formatType === 'PICK_WINNER' || question.formatType === 'TIMELINE' || !question.formatType) && (
         <div className="relative z-10 my-auto w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 px-2">
           
           {/* CARD A */}
@@ -99,12 +96,9 @@ export default function GameScreen({
                   TAP TO CHOOSE
                 </div>
               ) : (
-                <div className="space-y-1 animate-pop">
-                  <div className="text-2xl sm:text-4xl font-black text-[#e63946] font-mono bg-black/80 px-4 py-2 border border-white/20 rounded-full inline-block">
-                    {question.displayA}
-                  </div>
-                  <div className="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider text-slate-400">
-                    {question.formatType === ROUND_FORMATS.TIMELINE ? 'YEAR RELEASED' : question.metric}
+                <div className="animate-pop space-y-1">
+                  <div className="text-2xl sm:text-3xl font-black text-[#00E664]">
+                    {question.displayA || question.yearA}
                   </div>
                 </div>
               )}
@@ -130,97 +124,63 @@ export default function GameScreen({
                   TAP TO CHOOSE
                 </div>
               ) : (
-                <div className="space-y-1 animate-pop">
-                  <div className="text-2xl sm:text-4xl font-black text-[#e63946] font-mono bg-black/80 px-4 py-2 border border-white/20 rounded-full inline-block">
-                    {question.displayB}
-                  </div>
-                  <div className="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider text-slate-400">
-                    {question.formatType === ROUND_FORMATS.TIMELINE ? 'YEAR RELEASED' : question.metric}
+                <div className="animate-pop space-y-1">
+                  <div className="text-2xl sm:text-3xl font-black text-[#00E664]">
+                    {question.displayB || question.yearB}
                   </div>
                 </div>
               )}
             </div>
           </div>
+
         </div>
       )}
 
-      {/* FORMAT 2: OVER / UNDER THRESHOLD CHALLENGE */}
-      {question.formatType === ROUND_FORMATS.OVER_UNDER && (
-        <div className="relative z-10 my-auto w-full max-w-lg space-y-5 px-3">
-          
-          {/* Main Threshold Entity Card */}
-          <div className={`relative rounded-3xl border p-6 sm:p-8 flex flex-col items-center justify-center text-center ${
+      {/* FORMAT 2: OVER / UNDER DECISION CARD */}
+      {question.formatType === 'OVER_UNDER' && (
+        <div className="relative z-10 my-auto w-full max-w-xl space-y-6 px-2">
+          <div className={`rounded-3xl border p-6 sm:p-8 text-center space-y-4 shadow-xl ${
             isDark ? 'glass-pill-dark' : 'glass-pill-light'
           }`}>
-            <div className="space-y-3 w-full">
-              <div className="text-3xl sm:text-5xl font-black font-sans tracking-tight leading-tight">
-                “{question.entityA}”
-              </div>
-
-              <div className="text-[11px] sm:text-xs font-mono font-bold uppercase tracking-widest text-slate-400">
-                TARGET THRESHOLD
-              </div>
-
-              <div className="text-3xl sm:text-5xl font-black text-[#f4e4d0] font-mono bg-black/80 px-6 py-2 border border-white/20 rounded-full inline-block shadow-lg">
-                {question.targetDisplay}
-              </div>
+            <div className="text-3xl sm:text-5xl font-black font-sans tracking-tight leading-tight text-[#e63946]">
+              “{question.entityA}”
             </div>
+
+            {revealed && (
+              <div className="animate-pop pt-2 text-2xl sm:text-4xl font-black text-[#00E664]">
+                ACTUAL: {question.displayA || question.valueA}
+              </div>
+            )}
           </div>
 
-          {/* Action Pill Buttons: OVER / UNDER */}
-          {!revealed ? (
-            <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
-              <button
-                onClick={() => handleUserChoice('OVER')}
-                className="py-4 px-6 rounded-full btn-portfolio-red font-black text-xl sm:text-2xl tracking-wider uppercase flex items-center justify-center gap-2 cursor-pointer group active:scale-95"
-              >
-                <span>OVER</span>
-                <ArrowUp className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3]" />
-              </button>
+          <div className="grid grid-cols-2 gap-4">
+            <button
+              onClick={() => handleUserChoice('OVER')}
+              disabled={revealed}
+              className={`py-5 px-6 rounded-2xl bg-[#00E664] hover:bg-[#00c853] text-black font-black text-xl font-mono uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-95 shadow-lg ${
+                revealed && userChoice === 'OVER' ? (isCorrect ? 'ring-4 ring-white' : 'opacity-50 line-through') : ''
+              }`}
+            >
+              <ArrowUp className="w-6 h-6 stroke-[3]" />
+              <span>OVER ↑</span>
+            </button>
 
-              <button
-                onClick={() => handleUserChoice('UNDER')}
-                className={`py-4 px-6 rounded-full font-black text-xl sm:text-2xl tracking-wider uppercase flex items-center justify-center gap-2 cursor-pointer group active:scale-95 border ${
-                  isDark ? 'btn-portfolio-dark' : 'bg-white text-black border-slate-300'
-                }`}
-              >
-                <span>UNDER</span>
-                <ArrowDown className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3]" />
-              </button>
-            </div>
-          ) : (
-            <div className="text-center space-y-2 animate-pop">
-              <div className="text-base sm:text-xl font-mono font-bold text-white bg-black/90 px-5 py-2 border border-white/20 rounded-full inline-block">
-                ACTUAL VALUE: <span className="text-[#e63946] font-black">{question.displayA}</span>
-              </div>
-            </div>
-          )}
+            <button
+              onClick={() => handleUserChoice('UNDER')}
+              disabled={revealed}
+              className={`py-5 px-6 rounded-2xl bg-[#e63946] hover:bg-[#d62828] text-white font-black text-xl font-mono uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-95 shadow-lg ${
+                revealed && userChoice === 'UNDER' ? (isCorrect ? 'ring-4 ring-white' : 'opacity-50 line-through') : ''
+              }`}
+            >
+              <ArrowDown className="w-6 h-6 stroke-[3]" />
+              <span>UNDER ↓</span>
+            </button>
+          </div>
         </div>
       )}
 
-      {/* Result Status Stamp */}
-      {revealed && (
-        <div className="relative z-20 pb-4 animate-pop">
-          {isCorrect ? (
-            <div className="inline-flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 bg-[#00E664] text-black font-black text-lg sm:text-xl font-mono rounded-full border border-black shadow-lg">
-              <Check className="w-6 h-6 stroke-[3]" />
-              <span>STILL ALIVE (+1 STREAK)</span>
-            </div>
-          ) : (
-            <div className="inline-flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 bg-[#e63946] text-white font-black text-lg sm:text-xl font-mono rounded-full border border-black shadow-lg">
-              <X className="w-6 h-6 stroke-[3]" />
-              <span>YOU'RE OUT</span>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Footer info */}
-      {!revealed && (
-        <div className="relative z-10 pb-2 text-[10px] sm:text-xs font-mono text-slate-500 font-bold uppercase tracking-widest">
-          TAP YOUR GUESS TO STAY ALIVE
-        </div>
-      )}
+      {/* Footer Spacer */}
+      <div className="h-6 sm:h-8" />
     </div>
   );
 }
