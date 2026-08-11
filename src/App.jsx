@@ -1,122 +1,173 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import React, { useState, useEffect } from 'react';
+import Header from './components/Header';
+import StartScreen from './components/StartScreen';
+import GameScreen from './components/GameScreen';
+import ResultCorrectScreen from './components/ResultCorrectScreen';
+import ResultWrongScreen from './components/ResultWrongScreen';
+import questionsData from './data/questions.json';
+import { getBestStreak, saveBestStreak, getGameStats, updateGameStats } from './utils/storage';
 
-function App() {
-  const [count, setCount] = useState(0)
+// Screens enum
+const SCREEN = {
+  START: 'START',
+  GAME: 'GAME',
+  RESULT_CORRECT: 'RESULT_CORRECT',
+  RESULT_WRONG: 'RESULT_WRONG',
+};
+
+export default function App() {
+  const [currentScreen, setCurrentScreen] = useState(SCREEN.START);
+  const [currentStreak, setCurrentStreak] = useState(0);
+  const [bestStreak, setBestStreak] = useState(0);
+  const [stats, setStats] = useState({ totalGames: 0, totalCorrect: 0 });
+  const [currentQuestion, setCurrentQuestion] = useState(null);
+  const [usedQuestionIds, setUsedQuestionIds] = useState(new Set());
+  const [isNewBest, setIsNewBest] = useState(false);
+
+  // Load initial best streak & stats from localStorage
+  useEffect(() => {
+    setBestStreak(getBestStreak());
+    setStats(getGameStats());
+  }, []);
+
+  // Helper to pick next question based on current streak
+  const getNextQuestion = (streak, usedIds) => {
+    let targetDifficulty = 'Easy';
+    if (streak >= 12) {
+      targetDifficulty = 'Hard';
+    } else if (streak >= 5) {
+      targetDifficulty = 'Medium';
+    }
+
+    // Filter questions by difficulty that haven't been used yet
+    let available = questionsData.filter(
+      (q) => q.difficulty === targetDifficulty && !usedIds.has(q.id)
+    );
+
+    // Fallback if difficulty tier exhausted
+    if (available.length === 0) {
+      available = questionsData.filter((q) => !usedIds.has(q.id));
+    }
+
+    // Total fallback if all questions used in session
+    if (available.length === 0) {
+      available = questionsData;
+    }
+
+    const randomIndex = Math.floor(Math.random() * available.length);
+    const rawQuestion = available[randomIndex];
+
+    // Randomize A/B orientation 50/50
+    const swap = Math.random() < 0.5;
+    const formattedQuestion = {
+      id: rawQuestion.id,
+      category: rawQuestion.category,
+      metric: rawQuestion.metric,
+      entityA: swap ? rawQuestion.entityB : rawQuestion.entityA,
+      entityB: swap ? rawQuestion.entityA : rawQuestion.entityB,
+      valueA: swap ? rawQuestion.valueB : rawQuestion.valueA,
+      valueB: swap ? rawQuestion.valueA : rawQuestion.valueB,
+      displayA: swap ? rawQuestion.displayB : rawQuestion.displayA,
+      displayB: swap ? rawQuestion.displayA : rawQuestion.displayB,
+    };
+
+    return formattedQuestion;
+  };
+
+  const handleStartGame = () => {
+    setCurrentStreak(0);
+    setIsNewBest(false);
+    const newUsedIds = new Set();
+    const q = getNextQuestion(0, newUsedIds);
+    newUsedIds.add(q.id);
+
+    setUsedQuestionIds(newUsedIds);
+    setCurrentQuestion(q);
+    setCurrentScreen(SCREEN.GAME);
+  };
+
+  const handleGuess = (isCorrect) => {
+    updateGameStats(isCorrect);
+    setStats(getGameStats());
+
+    if (isCorrect) {
+      const nextStreak = currentStreak + 1;
+      setCurrentStreak(nextStreak);
+
+      const recordBroken = saveBestStreak(nextStreak);
+      if (recordBroken) {
+        setBestStreak(nextStreak);
+        setIsNewBest(true);
+      }
+
+      setCurrentScreen(SCREEN.RESULT_CORRECT);
+    } else {
+      const recordBroken = saveBestStreak(currentStreak);
+      if (recordBroken) {
+        setBestStreak(currentStreak);
+        setIsNewBest(true);
+      }
+      setCurrentScreen(SCREEN.RESULT_WRONG);
+    }
+  };
+
+  const handleNextQuestion = () => {
+    const q = getNextQuestion(currentStreak, usedQuestionIds);
+    const newUsedIds = new Set(usedQuestionIds);
+    newUsedIds.add(q.id);
+
+    setUsedQuestionIds(newUsedIds);
+    setCurrentQuestion(q);
+    setCurrentScreen(SCREEN.GAME);
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between selection:bg-amber-500 selection:text-slate-950 font-sans">
+      <Header
+        currentStreak={currentStreak}
+        bestStreak={bestStreak}
+        isGameScreen={currentScreen === SCREEN.GAME}
+      />
 
-      <div className="ticks"></div>
+      <main className="flex-1 flex flex-col justify-center py-2 px-2">
+        {currentScreen === SCREEN.START && (
+          <StartScreen
+            bestStreak={bestStreak}
+            stats={stats}
+            onStart={handleStartGame}
+          />
+        )}
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+        {currentScreen === SCREEN.GAME && currentQuestion && (
+          <GameScreen
+            question={currentQuestion}
+            currentStreak={currentStreak}
+            onGuess={handleGuess}
+          />
+        )}
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        {currentScreen === SCREEN.RESULT_CORRECT && currentQuestion && (
+          <ResultCorrectScreen
+            question={currentQuestion}
+            newStreak={currentStreak}
+            onNextQuestion={handleNextQuestion}
+          />
+        )}
+
+        {currentScreen === SCREEN.RESULT_WRONG && currentQuestion && (
+          <ResultWrongScreen
+            question={currentQuestion}
+            finalStreak={currentStreak}
+            bestStreak={bestStreak}
+            isNewBest={isNewBest}
+            onPlayAgain={handleStartGame}
+          />
+        )}
+      </main>
+
+      <footer className="py-2 text-center text-[11px] text-slate-600 font-mono uppercase tracking-wider">
+        ONE MORE • Fast-Paced Comparison Game
+      </footer>
+    </div>
+  );
 }
-
-export default App
