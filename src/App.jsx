@@ -79,23 +79,21 @@ export default function App() {
     setCurrentStreak(0);
     setIsNewBest(false);
 
-    try {
-      // Try backend server-authoritative session
-      const serverGame = await api.startGame();
-      if (serverGame && serverGame.sessionId && serverGame.question) {
-        setSessionId(serverGame.sessionId);
-        setCurrentQuestion(serverGame.question);
-        setCurrentScreen(SCREEN.GAME);
-        preloadQuestionImages(serverGame.question);
-        return;
-      }
-    } catch (e) {}
-
-    // Dynamic local fallback if server is offline in dev
+    // Instant UI screen transition (0ms delay)
     const localQ = generateDynamicQuestion(0);
     setCurrentQuestion(localQ);
     setCurrentScreen(SCREEN.GAME);
     preloadQuestionImages(localQ);
+
+    try {
+      // Sync server-authoritative session in background
+      const serverGame = await api.startGame();
+      if (serverGame && serverGame.sessionId && serverGame.question) {
+        setSessionId(serverGame.sessionId);
+        setCurrentQuestion(serverGame.question);
+        preloadQuestionImages(serverGame.question);
+      }
+    } catch (e) {}
   };
 
   const handleGuess = async (choice) => {

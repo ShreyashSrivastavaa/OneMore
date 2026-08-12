@@ -1,10 +1,16 @@
 // PLAY STILL ALIVE Client API Service
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.PROD ? 'https://onesolve.onrender.com/api' : 'http://localhost:5000/api');
 
-const request = async (endpoint, options = {}) => {
+const request = async (endpoint, options = {}, timeoutMs = 2500) => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
   const config = {
     credentials: 'include', // Mandates secure HTTP-only cookies
+    signal: controller.signal,
     headers: {
       'Content-Type': 'application/json',
       ...options.headers,
@@ -14,6 +20,7 @@ const request = async (endpoint, options = {}) => {
 
   try {
     const res = await fetch(`${API_BASE}${endpoint}`, config);
+    clearTimeout(timeoutId);
     const data = await res.json();
 
     if (!res.ok) {
@@ -22,6 +29,7 @@ const request = async (endpoint, options = {}) => {
 
     return data;
   } catch (err) {
+    clearTimeout(timeoutId);
     console.warn(`[API Notice] Request to ${endpoint} failed, utilizing local engine fallback if applicable.`, err.message);
     throw err;
   }
