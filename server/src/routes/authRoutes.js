@@ -18,7 +18,8 @@ router.get(
     failureRedirect: `${process.env.FRONTEND_URL || 'http://localhost:5173'}?auth_error=google`,
   }),
   (req, res) => {
-    res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}?auth_success=true`);
+    const userName = req.user ? req.user.name : 'PLAYER';
+    res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}?auth_success=true&user=${encodeURIComponent(userName)}`);
   }
 );
 
@@ -30,7 +31,8 @@ router.get(
     failureRedirect: `${process.env.FRONTEND_URL || 'http://localhost:5173'}?auth_error=github`,
   }),
   (req, res) => {
-    res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}?auth_success=true`);
+    const userName = req.user ? req.user.name : 'PLAYER';
+    res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}?auth_success=true&user=${encodeURIComponent(userName)}`);
   }
 );
 

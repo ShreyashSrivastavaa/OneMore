@@ -70,6 +70,11 @@ export default function App() {
     // Check OAuth URL redirects
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('auth_success') === 'true') {
+      const nameParam = urlParams.get('user');
+      if (nameParam) {
+        setUser({ name: nameParam });
+        setPlayerName(nameParam);
+      }
       checkAuth();
       window.history.replaceState({}, document.title, window.location.pathname);
     }
